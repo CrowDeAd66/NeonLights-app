@@ -1,3 +1,4 @@
+
 from flask import Flask, jsonify, request, session, send_from_directory
 from flask_cors import CORS
 import os
@@ -27,6 +28,61 @@ try:
         print("[Supabase] Variáveis de ambiente não encontradas. Usando dados de exemplo.")
 except Exception as e:
     print(f"[Supabase] Erro ao inicializar Supabase: {e}. Usando dados de exemplo.")
+
+# Dados de exemplo dos eventos
+example_events = [
+    {
+        "id": 1,
+        "name": "Open da Cucko",
+        "category": "funk",
+        "date": "2024-10-26",
+        "time": "23:00",
+        "location": "Cucko, Porto Alegre, RS",
+        "description": "O sextou mais aguardado do mês! Open bar com Budweiser, vodka Smirnoff, Catuaba e muito mais até as 05h. Funk hits no pistão e pop na pistinha.",
+        "price": "R$ 65,00",
+        "age_rating": "18+",
+        "image": "/static/open-cucko.jpg",
+        "lotes": [
+            {"nome": "Lote 1", "preco": 65.00},
+            {"nome": "Lote 2", "preco": 75.00},
+            {"nome": "Lote 3", "preco": 85.00}
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Baile Emo",
+        "category": "rock",
+        "date": "2024-11-15",
+        "time": "23:00",
+        "location": "Bar Opinião, Porto Alegre, RS",
+        "description": "Baile triste desde 2020! Shows cover exclusivos, tributos a bandas emo, Tinder Emo e welcome shots. A festa mais emo de Porto Alegre.",
+        "price": "R$ 90,00",
+        "age_rating": "18+",
+        "image": "/static/baile-emo.jpg",
+        "lotes": [
+            {"nome": "Lote 1", "preco": 90.00},
+            {"nome": "Lote 2", "preco": 100.00},
+            {"nome": "Lote 3", "preco": 110.00}
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Orion Festival",
+        "category": "eletronica",
+        "date": "2024-12-20",
+        "time": "18:00",
+        "location": "Canoas, RS",
+        "description": "O maior festival multicultural do Sul do Brasil! 7 dias de música eletrônica, psytrance e trance com camping. Artistas nacionais e internacionais.",
+        "price": "R$ 180,00",
+        "age_rating": "18+",
+        "image": "/static/orion-festival.jpg",
+        "lotes": [
+            {"nome": "Passaporte Lote 1", "preco": 180.00},
+            {"nome": "Passaporte Lote 2", "preco": 210.00},
+            {"nome": "Passaporte Lote 3", "preco": 240.00}
+        ]
+    }
+]
 
 # Rota principal - servir o frontend
 @app.route("/")
@@ -157,60 +213,27 @@ def get_events():
             return jsonify(events)
         else:
             # Usar dados dos eventos atualizados
-            events = [
-                {
-                    "id": 1,
-                    "name": "Open da Cucko",
-                    "category": "funk",
-                    "date": "2024-10-26",
-                    "time": "23:00",
-                    "location": "Cucko, Porto Alegre, RS",
-                    "description": "O sextou mais aguardado do mês! Open bar com Budweiser, vodka Smirnoff, Catuaba e muito mais até as 05h. Funk hits no pistão e pop na pistinha.",
-                    "price": "R$ 65,00",
-                    "age_rating": "18+",
-                    "image": "/static/open-cucko.jpg",
-                    "lotes": [
-                        {"nome": "Lote 1", "preco": 65.00},
-                        {"nome": "Lote 2", "preco": 75.00},
-                        {"nome": "Lote 3", "preco": 85.00}
-                    ]
-                },
-                {
-                    "id": 2,
-                    "name": "Baile Emo",
-                    "category": "rock",
-                    "date": "2024-11-15",
-                    "time": "23:00",
-                    "location": "Bar Opinião, Porto Alegre, RS",
-                    "description": "Baile triste desde 2020! Shows cover exclusivos, tributos a bandas emo, Tinder Emo e welcome shots. A festa mais emo de Porto Alegre.",
-                    "price": "R$ 90,00",
-                    "age_rating": "18+",
-                    "image": "/static/baile-emo.jpg",
-                    "lotes": [
-                        {"nome": "Lote 1", "preco": 90.00},
-                        {"nome": "Lote 2", "preco": 100.00},
-                        {"nome": "Lote 3", "preco": 110.00}
-                    ]
-                },
-                {
-                    "id": 3,
-                    "name": "Orion Festival",
-                    "category": "eletronica",
-                    "date": "2024-12-20",
-                    "time": "18:00",
-                    "location": "Canoas, RS",
-                    "description": "O maior festival multicultural do Sul do Brasil! 7 dias de música eletrônica, psytrance e trance com camping. Artistas nacionais e internacionais.",
-                    "price": "R$ 180,00",
-                    "age_rating": "18+",
-                    "image": "/static/orion-festival.jpg",
-                    "lotes": [
-                        {"nome": "Passaporte Lote 1", "preco": 180.00},
-                        {"nome": "Passaporte Lote 2", "preco": 210.00},
-                        {"nome": "Passaporte Lote 3", "preco": 240.00}
-                    ]
-                }
-            ]
-            return jsonify(events)
+            return jsonify(example_events)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/events/<int:event_id>", methods=["GET"])
+def get_event_details(event_id):
+    try:
+        if supabase:
+            response = supabase.table("events").select("*").eq("id", event_id).single().execute()
+            event = response.data
+            if event:
+                return jsonify(event)
+            else:
+                return jsonify({"error": "Evento não encontrado"}), 404
+        else:
+            # Usar dados de exemplo para um evento específico
+            for event_data in example_events:
+                if event_data["id"] == event_id:
+                    return jsonify(event_data)
+            return jsonify({"error": "Evento não encontrado (demo)"}), 404
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -247,3 +270,4 @@ def health():
 # Execução do app
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+
