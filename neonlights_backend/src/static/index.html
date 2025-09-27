@@ -3,183 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeonLights - Seu Guia de Eventos Noturnos</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
-    <!-- Google Maps API - Carregado no início -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=createMap&libraries=places&v=weekly"></script>
+    <title>NeonLights - Descubra a Noite</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div id="notification-container"></div>
-
+    <!-- Header -->
     <header class="header">
-        <div class="container">
-            <a href="#" class="logo">NeonLights</a>
-            <nav class="nav-menu">
-                <a href="#hero" class="nav-link">Início</a>
-                <a href="#events" class="nav-link">Eventos</a>
-                <a href="#map" class="nav-link">Mapa</a>
-                <a href="#features" class="nav-link">Recursos</a>
-                <a href="#download" class="nav-link">Download</a>
-                <a href="#contact" class="nav-link">Contato</a>
-            </nav>
-            <button class="login-btn"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <i class="fas fa-bolt neon-icon"></i>
+                    <span class="logo-text">NeonLights</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#home" class="nav-link">Início</a></li>
+                    <li><a href="#events" class="nav-link">Eventos</a></li>
+                    <li><a href="#map" class="nav-link">Mapa</a></li>
+                    <li><a href="#features" class="nav-link">Recursos</a></li>
+                    <li><a href="#" class="nav-link login-btn">Entrar</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
-        </div>
+        </nav>
     </header>
 
-    <main>
-        <section id="hero" class="hero">
-            <div class="container">
-                <h1>Sua Noite Começa Aqui</h1>
-                <p>Descubra os melhores eventos, festas e baladas perto de você. Conecte-se com a vida noturna!</p>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Descubra a <span class="neon-text">Noite</span>
+                    <br>que Você Procura
+                </h1>
+                <p class="hero-subtitle">
+                    Encontre os melhores eventos, festas e hot points noturnos da sua cidade. 
+                    Conecte-se com a vida noturna de forma inteligente e segura.
+                </p>
                 <div class="hero-buttons">
-                    <button class="btn btn-primary">Baixar App</button>
-                    <button class="btn btn-secondary">Ver Demo</button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-download"></i>
+                        Baixar App
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-play"></i>
+                        Ver Demo
+                    </button>
                 </div>
             </div>
-        </section>
-
-        <section id="events" class="events section-padding">
-            <div class="container">
-                <h2 class="section-title">Eventos em Destaque</h2>
-                <div class="filter-buttons">
-                    <button class="btn filter-btn active" data-filter="all">Todos</button>
-                    <button class="btn filter-btn" data-filter="funk">Funk</button>
-                    <button class="btn filter-btn" data-filter="rock">Rock</button>
-                    <button class="btn filter-btn" data-filter="eletronica">Eletrônica</button>
-                    <button class="btn filter-btn" data-filter="pop">Pop</button>
-                </div>
-                <div class="events-grid">
-                    <!-- Eventos serão carregados aqui pelo JavaScript -->
+            <div class="hero-visual">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <div class="app-interface">
+                            <div class="status-bar"></div>
+                            <div class="app-header">
+                                <span class="app-title">NeonLights</span>
+                            </div>
+                            <div class="event-cards">
+                                <div class="event-card">
+                                    <div class="event-image neon-bg-cyan"></div>
+                                    <div class="event-info">
+                                        <h4>Festa Neon</h4>
+                                        <p>Hoje, 22h</p>
+                                    </div>
+                                </div>
+                                <div class="event-card">
+                                    <div class="event-image neon-bg-pink"></div>
+                                    <div class="event-info">
+                                        <h4>Rock Night</h4>
+                                        <p>Amanhã, 21h</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+        <div class="hero-bg-effects">
+            <div class="neon-circle neon-circle-1"></div>
+            <div class="neon-circle neon-circle-2"></div>
+            <div class="neon-circle neon-circle-3"></div>
+        </div>
+    </section>
 
-        <section id="map" class="map-section section-padding">
-            <div class="container">
-                <h2 class="section-title">Encontre a Próxima Balada</h2>
-                <div class="map-container">
-                    <div id="map-canvas"></div>
+    <!-- Events Section -->
+    <section id="events" class="events-section">
+        <div class="container">
+            <h2 class="section-title">
+                Eventos em <span class="neon-text">Destaque</span>
+            </h2>
+            <div class="events-filters">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="eletronica">Eletrônica</button>
+                <button class="filter-btn" data-filter="rock">Rock</button>
+                <button class="filter-btn" data-filter="sertanejo">Sertanejo</button>
+                <button class="filter-btn" data-filter="funk">Funk</button>
+            </div>
+            <div class="events-grid">
+                <div class="event-item" data-category="eletronica">
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/300x200/00FFFF/000000?text=Festa+Neon" alt="Festa Neon">
+                        <div class="event-overlay">
+                            <button class="btn btn-small">Ver Detalhes</button>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3>Festa Neon Underground</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Vila Madalena, SP</p>
+                        <p class="event-time"><i class="fas fa-clock"></i> Hoje, 22:00</p>
+                        <p class="event-price">R$ 25,00</p>
+                        <div class="event-tags">
+                            <span class="tag">18+</span>
+                            <span class="tag">Eletrônica</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-item" data-category="rock">
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/300x200/FF1493/000000?text=Rock+Night" alt="Rock Night">
+                        <div class="event-overlay">
+                            <button class="btn btn-small">Ver Detalhes</button>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3>Rock Night Classic</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Bela Vista, SP</p>
+                        <p class="event-time"><i class="fas fa-clock"></i> Amanhã, 21:00</p>
+                        <p class="event-price">R$ 30,00</p>
+                        <div class="event-tags">
+                            <span class="tag">21+</span>
+                            <span class="tag">Rock</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-item" data-category="sertanejo">
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/300x200/32CD32/000000?text=Sertanejo+Live" alt="Sertanejo Live">
+                        <div class="event-overlay">
+                            <button class="btn btn-small">Ver Detalhes</button>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3>Sertanejo Live</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Mooca, SP</p>
+                        <p class="event-time"><i class="fas fa-clock"></i> Sábado, 20:00</p>
+                        <p class="event-price">R$ 40,00</p>
+                        <div class="event-tags">
+                            <span class="tag">18+</span>
+                            <span class="tag">Sertanejo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-item" data-category="funk">
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/300x200/FFD700/000000?text=Baile+Funk" alt="Baile Funk">
+                        <div class="event-overlay">
+                            <button class="btn btn-small">Ver Detalhes</button>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <h3>Baile Funk da Quebrada</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Cidade Tiradentes, SP</p>
+                        <p class="event-time"><i class="fas fa-clock"></i> Domingo, 19:00</p>
+                        <p class="event-price">R$ 15,00</p>
+                        <div class="event-tags">
+                            <span class="tag">16+</span>
+                            <span class="tag">Funk</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section id="map" class="map-section">
+        <div class="container">
+            <h2 class="section-title">
+                Eventos no <span class="neon-text">Mapa</span>
+            </h2>
+            <div class="map-container">
+                <div class="map-placeholder">
                     <div class="map-overlay">
-                        <h3>Ative sua localização</h3>
-                        <p>Para encontrar os melhores eventos perto de você.</p>
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h3>Mapa Interativo</h3>
+                        <p>Visualize todos os eventos próximos a você</p>
                         <button class="btn btn-primary">Ativar Localização</button>
                     </div>
                 </div>
+                <div class="map-sidebar">
+                    <h3>Eventos Próximos</h3>
+                    <div class="nearby-events">
+                        <div class="nearby-event">
+                            <div class="event-marker neon-bg-cyan"></div>
+                            <div class="event-details">
+                                <h4>Festa Neon Underground</h4>
+                                <p>0.5 km de distância</p>
+                            </div>
+                        </div>
+                        <div class="nearby-event">
+                            <div class="event-marker neon-bg-pink"></div>
+                            <div class="event-details">
+                                <h4>Rock Night Classic</h4>
+                                <p>1.2 km de distância</p>
+                            </div>
+                        </div>
+                        <div class="nearby-event">
+                            <div class="event-marker neon-bg-green"></div>
+                            <div class="event-details">
+                                <h4>Sertanejo Live</h4>
+                                <p>2.1 km de distância</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="features" class="features section-padding">
-            <div class="container">
-                <h2 class="section-title">Recursos Incríveis</h2>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <i class="fas fa-map-marked-alt"></i>
-                        <h3>Descubra Eventos</h3>
-                        <p>Explore uma vasta gama de eventos noturnos, de baladas a shows, perto de você.</p>
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2 class="section-title">
+                Por que escolher o <span class="neon-text">NeonLights</span>?
+            </h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marker-alt"></i>
                     </div>
-                    <div class="feature-item">
-                        <i class="fas fa-ticket-alt"></i>
-                        <h3>Ingressos Fáceis</h3>
-                        <p>Compre seus ingressos de forma rápida e segura, direto pelo aplicativo.</p>
+                    <h3>Geolocalização Inteligente</h3>
+                    <p>Encontre eventos próximos a você com precisão GPS e navegação integrada.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-filter"></i>
                     </div>
-                    <div class="feature-item">
+                    <h3>Filtros Personalizados</h3>
+                    <p>Filtre por tipo de música, faixa etária, preço e muito mais para encontrar o evento perfeito.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h3>Pagamento Seguro</h3>
+                    <p>Compre ingressos com segurança usando Pix, cartão de crédito ou débito.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
                         <i class="fas fa-users"></i>
-                        <h3>Conecte-se</h3>
-                        <p>Encontre amigos e conheça novas pessoas nos eventos que você ama.</p>
                     </div>
-                    <div class="feature-item">
-                        <i class="fas fa-bell"></i>
-                        <h3>Alertas Personalizados</h3>
-                        <p>Receba notificações sobre eventos que combinam com seu estilo.</p>
+                    <h3>Comunidade Ativa</h3>
+                    <p>Conecte-se com outros usuários, compartilhe experiências e descubra novos amigos.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-plus"></i>
                     </div>
+                    <h3>Crie Seus Eventos</h3>
+                    <p>Organize seus próprios eventos e convide amigos para participar da diversão.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Segurança e Privacidade</h3>
+                    <p>Seus dados estão protegidos com criptografia avançada e conformidade com a LGPD.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="download" class="download section-padding">
-            <div class="container">
-                <h2 class="section-title">Baixe o App Agora!</h2>
-                <p>Disponível para Android e iOS. Não perca mais nenhum evento!</p>
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Pronto para descobrir a noite?</h2>
+                <p>Baixe o NeonLights agora e comece a explorar os melhores eventos da sua cidade.</p>
                 <div class="cta-buttons">
-                    <button class="btn btn-primary"><i class="fab fa-google-play"></i> Google Play</button>
-                    <button class="btn btn-secondary"><i class="fab fa-apple"></i> App Store</button>
+                    <button class="btn btn-primary btn-large">
+                        <i class="fab fa-google-play"></i>
+                        Google Play
+                    </button>
+                    <button class="btn btn-primary btn-large">
+                        <i class="fab fa-apple"></i>
+                        App Store
+                    </button>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="contact" class="contact section-padding">
-            <div class="container">
-                <h2 class="section-title">Fale Conosco</h2>
-                <p>Tem alguma dúvida, sugestão ou quer anunciar seu evento? Entre em contato!</p>
-                <form class="contact-form">
-                    <input type="text" placeholder="Seu Nome">
-                    <input type="email" placeholder="Seu Email">
-                    <textarea placeholder="Sua Mensagem"></textarea>
-                    <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
-                </form>
-            </div>
-        </section>
-    </main>
-
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 NeonLights. Todos os direitos reservados.</p>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-bolt neon-icon"></i>
+                        <span class="logo-text">NeonLights</span>
+                    </div>
+                    <p>Descubra a noite que você procura com o melhor app de eventos noturnos.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Produto</h4>
+                    <ul>
+                        <li><a href="#">Recursos</a></li>
+                        <li><a href="#">Preços</a></li>
+                        <li><a href="#">Download</a></li>
+                        <li><a href="#">Suporte</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Empresa</h4>
+                    <ul>
+                        <li><a href="#">Sobre</a></li>
+                        <li><a href="#">Carreiras</a></li>
+                        <li><a href="#">Imprensa</a></li>
+                        <li><a href="#">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacidade</a></li>
+                        <li><a href="#">Termos</a></li>
+                        <li><a href="#">LGPD</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 NeonLights. Todos os direitos reservados.</p>
+                <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">Powered by CrowDeAd</p>
             </div>
         </div>
     </footer>
 
-    <!-- Modal de Login/Registro -->
+    <!-- Login Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <div class="auth-container">
-                <div class="login-form">
-                    <h2>Entrar</h2>
-                    <form>
-                        <input type="email" id="login-email" placeholder="Email" required>
-                        <input type="password" id="login-password" placeholder="Senha" required>
-                        <button type="submit" class="btn btn-primary">Entrar</button>
-                    </form>
-                    <p>Não tem uma conta? <a href="#" id="showRegister">Cadastre-se</a></p>
-                    <div class="social-login">
-                        <p>Ou entre com:</p>
-                        <button class="btn social-btn google" onclick="socialLogin(\'google\')"><i class="fab fa-google"></i> Google</button>
-                        <button class="btn social-btn spotify" onclick="socialLogin(\'spotify\')"><i class="fab fa-spotify"></i> Spotify</button>
-                        <button class="btn social-btn instagram" onclick="socialLogin(\'instagram\')"><i class="fab fa-instagram"></i> Instagram</button>
-                    </div>
+            <h2>Entrar no NeonLights</h2>
+            <form class="login-form">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" required>
                 </div>
-                <div class="register-form" style="display: none;">
-                    <h2>Cadastre-se</h2>
-                    <form>
-                        <input type="text" id="register-username" placeholder="Nome de Usuário" required>
-                        <input type="email" id="register-email" placeholder="Email" required>
-                        <input type="password" id="register-password" placeholder="Senha" required>
-                        <input type="password" id="register-confirm-password" placeholder="Confirmar Senha" required>
-                        <button type="submit" class="btn btn-primary">Cadastrar</button>
-                    </form>
-                    <p>Já tem uma conta? <a href="#" id="showLogin">Entrar</a></p>
-                    <div class="social-login">
-                        <p>Ou cadastre-se com:</p>
-                        <button class="btn social-btn google" onclick="socialLogin(\'google\')"><i class="fab fa-google"></i> Google</button>
-                        <button class="btn social-btn spotify" onclick="socialLogin(\'spotify\')"><i class="fab fa-spotify"></i> Spotify</button>
-                        <button class="btn social-btn instagram" onclick="socialLogin(\'instagram\')"><i class="fab fa-instagram"></i> Instagram</button>
-                    </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" required>
                 </div>
-            </div>
+                <button type="submit" class="btn btn-primary btn-full">Entrar</button>
+                <p class="form-footer">
+                    Não tem conta? <a href="#" class="neon-link">Cadastre-se</a>
+                </p>
+            </form>
         </div>
     </div>
 
-    <script src="/static/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

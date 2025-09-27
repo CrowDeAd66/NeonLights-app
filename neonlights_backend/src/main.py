@@ -1,7 +1,11 @@
-from flask import Flask, render_template, jsonify, request, session
+from flask import Flask, render_template, jsonify, request, session, send_from_directory
 from flask_cors import CORS
 from supabase import create_client, Client
 import os
+from dotenv import load_dotenv
+
+# Carregar variáveis de ambiente do arquivo .env
+load_dotenv()
 
 # Inicialização do Flask e CORS
 app = Flask(__name__)
@@ -20,10 +24,15 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
 print("[Supabase] Cliente Supabase inicializado com sucesso.")
 
-# Rota principal
+# Rota principal - servir o frontend
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return send_from_directory('static', 'index.html')
+
+# Rota para servir arquivos estáticos do frontend
+@app.route('/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('static', filename)
 
 # --- Autenticação ---
 

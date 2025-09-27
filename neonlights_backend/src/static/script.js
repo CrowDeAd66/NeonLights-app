@@ -1,6 +1,5 @@
 // Configuração da API
 const API_BASE = window.location.origin;
-
 let currentUser = null;
 let userLocation = null;
 let map = null;
@@ -17,8 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeModal = document.querySelector('.close');
     const filterBtns = document.querySelectorAll('.filter-btn');
     const navLinks = document.querySelectorAll('.nav-link');
-    const loginForm = document.querySelector('.login-form');
-    const registerForm = document.querySelector('.register-form');
 
     // Inicialização
     checkAuthStatus();
@@ -83,71 +80,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Formulário de Login
+    const loginForm = document.querySelector('.login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
     }
-
-    // Formulário de Registro
-    if (registerForm) {
-        registerForm.addEventListener('submit', handleRegister);
-    }
-
-    // Aguardar um pouco para garantir que o DOM esteja totalmente carregado
-    setTimeout(() => {
-        // Alternar entre formulários de login e registro
-        const showRegisterBtn = document.getElementById('showRegister');
-        const showLoginBtn = document.getElementById('showLogin');
-        const loginFormEl = document.querySelector('.login-form');
-        const registerFormEl = document.querySelector('.register-form');
-
-        console.log('Elementos encontrados:', {
-            showRegisterBtn: !!showRegisterBtn,
-            showLoginBtn: !!showLoginBtn,
-            loginFormEl: !!loginFormEl,
-            registerFormEl: !!registerFormEl
-        });
-
-        if (showRegisterBtn && loginFormEl && registerFormEl) {
-            showRegisterBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Clicou em Cadastre-se');
-                loginFormEl.style.display = 'none';
-                registerFormEl.style.display = 'block';
-            });
-        }
-
-        if (showLoginBtn && loginFormEl && registerFormEl) {
-            showLoginBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Clicou em Entrar');
-                registerFormEl.style.display = 'none';
-                loginFormEl.style.display = 'block';
-            });
-        }
-    }, 500);
-
-    // Também adicionar event delegation para garantir que funcione
-    document.addEventListener('click', function(e) {
-        if (e.target && e.target.id === 'showRegister') {
-            e.preventDefault();
-            const loginFormEl = document.querySelector('.login-form');
-            const registerFormEl = document.querySelector('.register-form');
-            if (loginFormEl && registerFormEl) {
-                loginFormEl.style.display = 'none';
-                registerFormEl.style.display = 'block';
-            }
-        }
-        
-        if (e.target && e.target.id === 'showLogin') {
-            e.preventDefault();
-            const loginFormEl = document.querySelector('.login-form');
-            const registerFormEl = document.querySelector('.register-form');
-            if (loginFormEl && registerFormEl) {
-                registerFormEl.style.display = 'none';
-                loginFormEl.style.display = 'block';
-            }
-        }
-    });
 
     // Navegação suave
     navLinks.forEach(link => {
@@ -258,28 +194,13 @@ async function apiRequest(endpoint, options = {}) {
 // Verificar status de autenticação
 async function checkAuthStatus() {
     try {
-        // Para SQLite, verificamos se há uma sessão ativa
-        const response = await fetch(`${API_BASE}/api/auth/status`, {
-            credentials: 'include'
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            if (data.user) {
-                currentUser = data.user;
-                updateUIForLoggedUser();
-            } else {
-                currentUser = null;
-                updateUIForLoggedOutUser();
-            }
-        } else {
-            currentUser = null;
-            updateUIForLoggedOutUser();
+        const response = await apiRequest('/api/auth/check-auth');
+        if (response.authenticated) {
+            currentUser = response.user;
+            updateUIForLoggedUser();
         }
     } catch (error) {
-        console.log('Erro ao verificar autenticação:', error);
-        currentUser = null;
-        updateUIForLoggedOutUser();
+        console.log('Usuário não autenticado');
     }
 }
 
@@ -291,28 +212,20 @@ function updateUIForLoggedUser() {
     }
 }
 
-// Atualizar UI para usuário deslogado
-function updateUIForLoggedOutUser() {
-    const loginBtn = document.querySelector('.login-btn');
-    if (loginBtn) {
-        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
-    }
-}
-
 // Handle Login
 async function handleLogin(e) {
     e.preventDefault();
     
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
     
     try {
-        const data = await apiRequest('/api/auth/login', {
+        const response = await apiRequest('/api/auth/login', {
             method: 'POST',
             body: JSON.stringify({ email, password })
         });
         
-        currentUser = data.user;
+        currentUser = response.user;
         updateUIForLoggedUser();
         
         const modal = document.getElementById('loginModal');
@@ -323,73 +236,6 @@ async function handleLogin(e) {
         
     } catch (error) {
         showNotification(error.message, 'error');
-    }
-}
-
-// Handle Register
-async function handleRegister(e) {
-    e.preventDefault();
-
-    const username = document.getElementById('register-username').value;
-    const email = document.getElementById('register-email').value;
-    const password = document.getElementById('register-password').value;
-
-    try {
-        const data = await apiRequest('/api/auth/register', {
-            method: 'POST',
-            body: JSON.stringify({ username, email, password })
-        });
-
-        currentUser = data.user;
-        updateUIForLoggedUser();
-
-        const modal = document.getElementById('loginModal');
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-
-        showNotification('Registro realizado com sucesso!', 'success');
-
-    } catch (error) {
-        showNotification(error.message, 'error');
-    }
-}
-
-// Login Social - CORRIGIDO E MELHORADO
-function socialLogin(provider) {
-    console.log(`Iniciando login com ${provider}`);
-    
-    // URLs de redirecionamento para cada provedor
-    const redirectUrls = {
-        google: '/api/auth/google',
-        spotify: '/api/auth/spotify', 
-        instagram: '/api/auth/instagram'
-    };
-    
-    if (redirectUrls[provider]) {
-        showNotification(`Redirecionando para login com ${provider.charAt(0).toUpperCase() + provider.slice(1)}...`, 'info');
-        
-        // Abrir popup para login social
-        const popup = window.open(
-            redirectUrls[provider], 
-            `${provider}_login`,
-            'width=500,height=600,scrollbars=yes,resizable=yes'
-        );
-        
-        // Monitorar o popup para detectar quando o login for concluído
-        const checkClosed = setInterval(() => {
-            if (popup.closed) {
-                clearInterval(checkClosed);
-                // Verificar se o login foi bem-sucedido
-                checkAuthStatus();
-                const modal = document.getElementById('loginModal');
-                if (modal) {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                }
-            }
-        }, 1000);
-    } else {
-        showNotification(`Provedor ${provider} não suportado`, 'error');
     }
 }
 
@@ -435,9 +281,10 @@ function showUserMenu() {
 async function logout() {
     try {
         await apiRequest('/api/auth/logout', { method: 'POST' });
-
         currentUser = null;
-        updateUIForLoggedOutUser();
+        
+        const loginBtn = document.querySelector('.login-btn');
+        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
         
         showNotification('Logout realizado com sucesso!', 'success');
         
@@ -447,11 +294,11 @@ async function logout() {
         document.body.style.overflow = 'auto';
         
     } catch (error) {
-        showNotification('Erro ao fazer logout: ' + error.message, 'error');
+        showNotification('Erro ao fazer logout', 'error');
     }
 }
 
-// Carregar eventos - ATUALIZADO COM NOVOS EVENTOS
+// Carregar eventos
 async function loadEvents(category = 'all') {
     try {
         let endpoint = '/api/events';
@@ -459,68 +306,19 @@ async function loadEvents(category = 'all') {
             endpoint += `?category=${category}`;
         }
         
-        // Se a API não estiver disponível, usar dados mockados
-        try {
-            const events = await apiRequest(endpoint);
-            displayEvents(events);
-        } catch (error) {
-            console.log('API não disponível, usando dados mockados');
-            const mockEvents = getMockEvents(category);
-            displayEvents(mockEvents);
+        // Se temos localização, incluir nas consultas
+        if (userLocation) {
+            const separator = endpoint.includes('?') ? '&' : '?';
+            endpoint += `${separator}lat=${userLocation.latitude}&lng=${userLocation.longitude}`;
         }
+        
+        const events = await apiRequest(endpoint);
+        displayEvents(events);
         
     } catch (error) {
         console.error('Erro ao carregar eventos:', error);
         showNotification('Erro ao carregar eventos', 'error');
     }
-}
-
-// Dados mockados dos novos eventos
-function getMockEvents(category = 'all') {
-    const allEvents = [
-        {
-            id: '1',
-            title: 'Open da Cucko',
-            category: 'funk',
-            location: 'CUCKO, Rua General Lima e Silva, 1037 Centro Histórico, Porto Alegre, RS',
-            date: '2025-10-15',
-            time: '22:00',
-            price: 65.00,
-            age_restriction: '18+',
-            description: 'O SEXTOU MAIS AGUARDADO DO MÊS CHEGOU. OPEN BAR de Budweiser, Combinho com vodka Smirnoff, Catucombo, Catuaba, Hi-Fi, Gin Tônica, Tropical Gin, Refri e Água, liberados até as 05H. Pistão: Funk Hits (DJs FranFo Machado, Rafa Coppetti, Gui Almeida). Pistinha: Pop e o que os DJs quiserem (DJs Tribino, Natiê, Davi).',
-            image_url: '/static/images/open_cucko.jpg'
-        },
-        {
-            id: '2', 
-            title: 'Baile Emo',
-            category: 'rock',
-            location: 'Amnesia Bar, Rua Ibipetuba, 182, Vila Prudente, São Paulo - SP',
-            date: '2025-10-20',
-            time: '22:00',
-            price: 90.00,
-            age_restriction: '18+',
-            description: 'O Baile Emo volta a São Paulo para uma noite sombria e inesquecível: a edição especial NIGHTMARE. Tocando o melhor do metalcore, post-hardcore, pop-punk, nu metal e emocore! Evento com Karaokê Avenged Sevenfold, decoração temática, Tinder Emo com stickers exclusivos e Tequila Gun.',
-            image_url: '/static/images/baile_emo.jpg'
-        },
-        {
-            id: '3',
-            title: 'Orion Festival',
-            category: 'eletronica',
-            location: 'Fazenda Orion, Estrada Rural KM 15, Campos do Jordão - SP',
-            date: '2025-11-01',
-            time: '18:00',
-            price: 180.00,
-            age_restriction: '18+',
-            description: 'O maior festival de música eletrônica de 7 dias do Brasil! Passaporte completo com área de camping inclusa, barracas permitidas. Lineup com os melhores DJs nacionais e internacionais de psytrance, progressive, full-on e dark psy. Uma experiência única de imersão na natureza e música eletrônica.',
-            image_url: '/static/images/orion_festival.jpg'
-        }
-    ];
-
-    if (category === 'all') {
-        return allEvents;
-    }
-    
-    return allEvents.filter(event => event.category === category);
 }
 
 // Exibir eventos
@@ -530,27 +328,25 @@ function displayEvents(events) {
     
     eventsGrid.innerHTML = '';
     
-    if (events.length === 0) {
-        eventsGrid.innerHTML = '<p class="no-events">Nenhum evento encontrado.</p>';
-        return;
-    }
-    
     events.forEach(event => {
         const eventElement = document.createElement('div');
         eventElement.className = 'event-item';
         eventElement.setAttribute('data-category', event.category);
         
+        const distanceText = event.distance ? `<p class="event-distance"><i class="fas fa-route"></i> ${event.distance} km</p>` : '';
+        
         eventElement.innerHTML = `
             <div class="event-image">
                 <img src="${event.image_url || 'https://via.placeholder.com/300x200/00FFFF/000000?text=' + encodeURIComponent(event.title)}" alt="${event.title}">
                 <div class="event-overlay">
-                    <button class="btn btn-small" onclick="showEventDetails('${event.id}')">Ver Detalhes</button>
+                    <button class="btn btn-small" onclick="showEventDetails(${event.id})">Ver Detalhes</button>
                 </div>
             </div>
             <div class="event-content">
                 <h3>${event.title}</h3>
                 <p class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
                 <p class="event-time"><i class="fas fa-clock"></i> ${event.date} às ${event.time}</p>
+                ${distanceText}
                 <p class="event-price">R$ ${event.price ? event.price.toFixed(2) : 'Gratuito'}</p>
                 <div class="event-tags">
                     <span class="tag">${event.age_restriction || '18+'}</span>
@@ -561,293 +357,255 @@ function displayEvents(events) {
         
         eventsGrid.appendChild(eventElement);
     });
+    
+    // Atualizar mapa se disponível
+    if (map && events.length > 0) {
+        updateMapMarkers(events);
+    }
+}
+
+// Mostrar detalhes do evento
+async function showEventDetails(eventId) {
+    try {
+        const event = await apiRequest(`/api/events/${eventId}`);
+        
+        const eventModal = document.createElement('div');
+        eventModal.className = 'modal';
+        eventModal.innerHTML = `
+            <div class="modal-content" style="max-width: 600px;">
+                <span class="close">&times;</span>
+                <h2>${event.title}</h2>
+                <div class="event-details-modal">
+                    <div class="event-image-modal">
+                        <img src="${event.image_url || 'https://via.placeholder.com/500x300/00FFFF/000000?text=' + encodeURIComponent(event.title)}" alt="${event.title}">
+                    </div>
+                    <div class="event-info-modal">
+                        <p><i class="fas fa-map-marker-alt"></i> <strong>Local:</strong> ${event.location}</p>
+                        <p><i class="fas fa-clock"></i> <strong>Data/Hora:</strong> ${event.date} às ${event.time}</p>
+                        <p><i class="fas fa-music"></i> <strong>Categoria:</strong> ${event.category}</p>
+                        <p><i class="fas fa-users"></i> <strong>Idade:</strong> ${event.age_restriction || '18+'}</p>
+                        <p><i class="fas fa-tag"></i> <strong>Preço:</strong> R$ ${event.price ? event.price.toFixed(2) : 'Gratuito'}</p>
+                        <p><i class="fas fa-user"></i> <strong>Criado por:</strong> ${event.creator}</p>
+                        ${event.distance ? `<p><i class="fas fa-route"></i> <strong>Distância:</strong> ${event.distance} km</p>` : ''}
+                        <div class="event-description">
+                            <h4>Descrição</h4>
+                            <p>${event.description || 'Sem descrição disponível.'}</p>
+                        </div>
+                        <div class="event-actions">
+                            <button class="btn btn-primary" onclick="showPaymentModal('${event.title}', ${event.price || 0})">Comprar Ingresso</button>
+                            <button class="btn btn-secondary" onclick="confirmPresence(${event.id})">Confirmar Presença</button>
+                            ${event.latitude && event.longitude ? `<button class="btn btn-secondary" onclick="showOnMap(${event.latitude}, ${event.longitude})">Ver no Mapa</button>` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(eventModal);
+        eventModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+
+        const closeBtn = eventModal.querySelector('.close');
+        closeBtn.addEventListener('click', () => {
+            eventModal.remove();
+            document.body.style.overflow = 'auto';
+        });
+
+        eventModal.addEventListener('click', (e) => {
+            if (e.target === eventModal) {
+                eventModal.remove();
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+    } catch (error) {
+        showNotification('Erro ao carregar detalhes do evento', 'error');
+    }
 }
 
 // Inicializar geolocalização
 function initializeGeolocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                userLocation = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                };
-                console.log('Localização obtida:', userLocation);
-                initializeMap(); // Inicializar mapa após obter localização
-            },
-            function(error) {
-                console.log('Erro ao obter localização:', error);
-                // Usar localização padrão (São Paulo) se não conseguir obter
-                userLocation = {
-                    latitude: -23.5505,
-                    longitude: -46.6333
-                };
-                initializeMap();
-            }
-        );
+    if ('geolocation' in navigator) {
+        showNotification('Clique em "Ativar Localização" para ver eventos próximos', 'info');
     } else {
-        console.log('Geolocalização não suportada');
-        // Usar localização padrão (São Paulo)
-        userLocation = {
-            latitude: -23.5505,
-            longitude: -46.6333
-        };
-        initializeMap();
+        showNotification('Geolocalização não suportada neste navegador', 'warning');
     }
 }
 
-// Inicializar mapa do Google - CORRIGIDO COM NOVA CHAVE
-function initializeMap() {
-    // Carregar Google Maps API dinamicamente com nova chave
-    if (!window.google) {
-        const script = document.createElement('script');
-        // NOVA CHAVE DO GOOGLE MAPS - SUBSTITUA PELA SUA CHAVE VÁLIDA
-        script.src = 'https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=createMap';
-        script.async = true;
-        script.defer = true;
-        script.onerror = function() {
-            console.error('Erro ao carregar Google Maps API');
-            showMapError();
-        };
-        document.head.appendChild(script);
-    } else {
-        createMap();
-    }
-}
-
-// Mostrar erro do mapa
-function showMapError() {
-    const mapElement = document.getElementById('map-canvas');
-    if (mapElement) {
-        mapElement.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #1a1a1a; color: #fff; text-align: center; padding: 20px;">
-                <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #ff1493; margin-bottom: 20px;"></i>
-                <h3>Erro ao carregar o mapa</h3>
-                <p>Não foi possível carregar o Google Maps. Verifique sua conexão com a internet ou tente novamente mais tarde.</p>
-                <button class="btn btn-primary" onclick="initializeMap()" style="margin-top: 20px;">Tentar Novamente</button>
-            </div>
-        `;
+// Ativar localização
+function activateLocation() {
+    const mapOverlay = document.querySelector('.map-overlay');
+    const btn = mapOverlay.querySelector('.btn');
+    
+    if (!('geolocation' in navigator)) {
+        showNotification('Geolocalização não suportada neste navegador', 'error');
+        return;
     }
     
-    // Esconder overlay
-    const overlay = document.querySelector('.map-overlay');
-    if (overlay) {
-        overlay.style.display = 'none';
-    }
+    btn.textContent = 'Obtendo localização...';
+    btn.disabled = true;
+    
+    navigator.geolocation.getCurrentPosition(
+        async function(position) {
+            userLocation = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            };
+            
+            showNotification('Localização obtida com sucesso!', 'success');
+            
+            // Inicializar mapa
+            await initializeMap();
+            
+            // Recarregar eventos com localização
+            const activeFilter = document.querySelector('.filter-btn.active');
+            const category = activeFilter ? activeFilter.getAttribute('data-filter') : 'all';
+            loadEvents(category);
+            
+        },
+        function(error) {
+            btn.textContent = 'Ativar Localização';
+            btn.disabled = false;
+            
+            let errorMessage = 'Erro ao obter localização';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage = 'Permissão de localização negada';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage = 'Localização indisponível';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage = 'Timeout ao obter localização';
+                    break;
+            }
+            
+            showNotification(errorMessage, 'error');
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000
+        }
+    );
 }
 
-// Criar mapa
-function createMap() {
-    const mapElement = document.getElementById('map-canvas');
-    if (!mapElement || !userLocation) return;
-
-    // Remover overlay se existir
-    const overlay = document.querySelector('.map-overlay');
-    if (overlay) {
-        overlay.style.display = 'none';
+// Inicializar Google Maps
+async function initializeMap() {
+    if (!userLocation) return;
+    
+    const mapContainer = document.querySelector('.map-placeholder');
+    if (!mapContainer) return;
+    
+    // Criar elemento do mapa
+    mapContainer.innerHTML = '<div id="google-map" style="width: 100%; height: 100%; border-radius: 15px;"></div>';
+    
+    // Carregar Google Maps API
+    if (!window.google) {
+        await loadGoogleMapsAPI();
     }
-
-    try {
-        map = new google.maps.Map(mapElement, {
-            center: { lat: userLocation.latitude, lng: userLocation.longitude },
-            zoom: 14,
-            styles: [
-                {
-                    "elementType": "geometry",
-                    "stylers": [{"color": "#1d2c4d"}]
-                },
-                {
-                    "elementType": "labels.text.fill",
-                    "stylers": [{"color": "#8ec3b9"}]
-                },
-                {
-                    "elementType": "labels.text.stroke",
-                    "stylers": [{"color": "#1a3646"}]
-                },
-                {
-                    "featureType": "administrative.country",
-                    "elementType": "geometry.stroke",
-                    "stylers": [{"color": "#4b6878"}]
-                },
-                {
-                    "featureType": "administrative.land_parcel",
-                    "elementType": "labels.text.fill",
-                    "stylers": [{"color": "#64779e"}]
-                },
-                {
-                    "featureType": "administrative.province",
-                    "elementType": "geometry.stroke",
-                    "stylers": [{"color": "#4b6878"}]
-                },
-                {
-                    "featureType": "landscape.man_made",
-                    "elementType": "geometry.stroke",
-                    "stylers": [{"color": "#334e87"}]
-                },
-                {
-                    "featureType": "landscape.natural",
-                    "elementType": "geometry",
-                    "stylers": [{"color": "#023e58"}]
-                },
-                {
-                    "featureType": "poi",
-                    "elementType": "geometry",
-                    "stylers": [{"color": "#283d6a"}]
-                },
-                {
-                    "featureType": "poi",
-                    "elementType": "labels.text.fill",
-                    "stylers": [{"color": "#6f9ba5"}]
-                },
-                {
-                    "featureType": "poi",
-                    "elementType": "labels.text.stroke",
-                    "stylers": [{"color": "#1d2c4d"}]
-                },
-                {
-                    "featureType": "poi.park",
-                    "elementType": "geometry.fill",
-                    "stylers": [{"color": "#023e58"}]
-                },
-                {
-                    "featureType": "poi.park",
-                    "elementType": "labels.text.fill",
-                    "stylers": [{"color": "#3C7680"}]
-                },
-                {
-                    "featureType": "road",
-                    "elementType": "geometry",
-                    "stylers": [{"color": "#304a7d"}]
-                },
-                {
-                    "featureType": "road",
-                    "elementType": "labels.text.fill",
-                    "stylers": [{"color": "#98a5be"}]
-                },
-                {
-                    "featureType": "road",
-                    "elementType": "labels.text.stroke",
-                    "stylers": [{"color": "#1d2c4d"}]
-                },
-                {
-                    "featureType": "road.highway",
-                    "elementType": "geometry",
-                    "stylers": [{"color": "#2c6675"}]
-                },
-                {
-                    "featureType": "road.highway",
-                    "elementType": "geometry.stroke",
-                    "stylers": [{"color": "#255763"}]
-                },
-                {
-                    "featureType": "road.highway",
-                    "elementType": "labels.text.fill",
-                    "stylers": [{"color": "#b0d5ce"}]
-                },
-                {
-                    "featureType": "road.highway",
-                    "elementType": "labels.text.stroke",
-                    "stylers": [{"color": "#023e58"}]
-                },
-                {
-                    "featureType": "transit",
-                    "elementType": "labels.text.fill",
-                    "stylers": [{"color": "#98a5be"}]
-                },
-                {
-                    "featureType": "transit",
-                    "elementType": "labels.text.stroke",
-                    "stylers": [{"color": "#1d2c4d"}]
-                },
-                {
-                    "featureType": "transit.line",
-                    "elementType": "geometry.fill",
-                    "stylers": [{"color": "#283d6a"}]
-                },
-                {
-                    "featureType": "transit.station",
-                    "elementType": "geometry",
-                    "stylers": [{"color": "#3a4762"}]
-                },
-                {
-                    "featureType": "water",
-                    "elementType": "geometry",
-                    "stylers": [{"color": "#0e1626"}]
-                },
-                {
-                    "featureType": "water",
-                    "elementType": "labels.text.fill",
-                    "stylers": [{"color": "#4e6d70"}]
-                }
-            ]
-        });
-
-        // Adicionar marcador da localização do usuário
-        new google.maps.Marker({
-            position: { lat: userLocation.latitude, lng: userLocation.longitude },
-            map: map,
-            title: 'Sua localização',
-            icon: {
-                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="8" fill="#00FFFF" stroke="#000" stroke-width="2"/>
-                        <circle cx="12" cy="12" r="3" fill="#000"/>
-                    </svg>
-                `),
-                scaledSize: new google.maps.Size(24, 24)
+    
+    // Inicializar mapa
+    map = new google.maps.Map(document.getElementById('google-map'), {
+        center: { lat: userLocation.latitude, lng: userLocation.longitude },
+        zoom: 14,
+        styles: [
+            {
+                "featureType": "all",
+                "elementType": "geometry",
+                "stylers": [{"color": "#1a1a1a"}]
+            },
+            {
+                "featureType": "all",
+                "elementType": "labels.text.fill",
+                "stylers": [{"color": "#00ffff"}]
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [{"color": "#0a0a0a"}]
             }
-        });
+        ]
+    });
+    
+    // Adicionar marcador da localização do usuário
+    new google.maps.Marker({
+        position: { lat: userLocation.latitude, lng: userLocation.longitude },
+        map: map,
+        title: 'Sua localização',
+        icon: {
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="15" cy="15" r="10" fill="#00ffff" stroke="#ffffff" stroke-width="2"/>
+                    <circle cx="15" cy="15" r="3" fill="#ffffff"/>
+                </svg>
+            `),
+            scaledSize: new google.maps.Size(30, 30)
+        }
+    });
+    
+    // Buscar pontos de interesse próximos
+    searchNearbyPlaces();
+}
 
-        // Buscar pontos de interesse próximos
-        searchNearbyPlaces();
+// Carregar Google Maps API
+function loadGoogleMapsAPI() {
+    return new Promise((resolve, reject) => {
+        if (window.google) {
+            resolve();
+            return;
+        }
         
-        showNotification('Mapa carregado com sucesso!', 'success');
-        
-    } catch (error) {
-        console.error('Erro ao criar mapa:', error);
-        showMapError();
-    }
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw&libraries=places`;
+        script.async = true;
+        script.defer = true;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
 }
 
 // Buscar pontos de interesse próximos
 function searchNearbyPlaces() {
     if (!map || !userLocation) return;
-
+    
     const service = new google.maps.places.PlacesService(map);
+    
     const request = {
-        location: { lat: userLocation.latitude, lng: userLocation.longitude },
-        radius: 5000, // 5km
-        types: ['night_club', 'bar', 'restaurant']
+        location: new google.maps.LatLng(userLocation.latitude, userLocation.longitude),
+        radius: 5000,
+        type: ['night_club', 'bar', 'restaurant', 'entertainment']
     };
-
+    
     service.nearbySearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-            results.slice(0, 10).forEach((place, index) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+            results.slice(0, 10).forEach(place => {
                 const marker = new google.maps.Marker({
                     position: place.geometry.location,
                     map: map,
                     title: place.name,
                     icon: {
                         url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="16" cy="16" r="12" fill="#FF1493" stroke="#000" stroke-width="2"/>
-                                <text x="16" y="20" text-anchor="middle" fill="#FFF" font-size="12" font-weight="bold">🎵</text>
+                            <svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12.5" cy="12.5" r="8" fill="#ff1493" stroke="#ffffff" stroke-width="2"/>
+                                <text x="12.5" y="16" text-anchor="middle" fill="white" font-size="10">🎵</text>
                             </svg>
                         `),
-                        scaledSize: new google.maps.Size(32, 32)
+                        scaledSize: new google.maps.Size(25, 25)
                     }
                 });
-
+                
                 const infoWindow = new google.maps.InfoWindow({
                     content: `
-                        <div style="color: #000;">
+                        <div style="color: #333;">
                             <h4>${place.name}</h4>
                             <p>Rating: ${place.rating || 'N/A'} ⭐</p>
                             <p>${place.vicinity}</p>
                         </div>
                     `
                 });
-
+                
                 marker.addListener('click', () => {
                     infoWindow.open(map, marker);
                 });
@@ -856,211 +614,358 @@ function searchNearbyPlaces() {
     });
 }
 
-// Ativar localização - MELHORADO
-function activateLocation() {
-    const locationBtn = document.querySelector('.map-overlay .btn');
-    if (locationBtn) {
-        locationBtn.textContent = 'Obtendo localização...';
-        locationBtn.disabled = true;
-    }
+// Atualizar marcadores do mapa
+function updateMapMarkers(events) {
+    if (!map) return;
     
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                userLocation = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                };
-                showNotification('Localização ativada com sucesso!', 'success');
-                initializeMap(); // Reinicializar mapa com nova localização
-                loadEvents(); // Recarregar eventos com localização
-            },
-            function(error) {
-                console.error('Erro ao obter localização:', error);
-                let errorMessage = 'Erro ao obter localização';
-                
-                switch(error.code) {
-                    case error.PERMISSION_DENIED:
-                        errorMessage = 'Permissão de localização negada. Por favor, permita o acesso à localização nas configurações do navegador.';
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        errorMessage = 'Localização não disponível. Verifique se o GPS está ativado.';
-                        break;
-                    case error.TIMEOUT:
-                        errorMessage = 'Tempo limite para obter localização excedido. Tente novamente.';
-                        break;
+    // Limpar marcadores existentes
+    markers.forEach(marker => marker.setMap(null));
+    markers = [];
+    
+    // Adicionar marcadores dos eventos
+    events.forEach(event => {
+        if (event.latitude && event.longitude) {
+            const marker = new google.maps.Marker({
+                position: { lat: event.latitude, lng: event.longitude },
+                map: map,
+                title: event.title,
+                icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                        <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="15" cy="15" r="12" fill="#32cd32" stroke="#ffffff" stroke-width="2"/>
+                            <text x="15" y="19" text-anchor="middle" fill="white" font-size="12">🎉</text>
+                        </svg>
+                    `),
+                    scaledSize: new google.maps.Size(30, 30)
                 }
-                
-                showNotification(errorMessage, 'error');
-                
-                if (locationBtn) {
-                    locationBtn.textContent = 'Ativar Localização';
-                    locationBtn.disabled = false;
-                }
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 60000
-            }
-        );
-    } else {
-        showNotification('Geolocalização não é suportada neste navegador', 'error');
-        if (locationBtn) {
-            locationBtn.textContent = 'Ativar Localização';
-            locationBtn.disabled = false;
+            });
+            
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                    <div style="color: #333; max-width: 200px;">
+                        <h4>${event.title}</h4>
+                        <p><strong>Data:</strong> ${event.date} às ${event.time}</p>
+                        <p><strong>Local:</strong> ${event.location}</p>
+                        <p><strong>Preço:</strong> R$ ${event.price ? event.price.toFixed(2) : 'Gratuito'}</p>
+                        <button onclick="showEventDetails(${event.id})" style="background: #00ffff; color: #000; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Ver Detalhes</button>
+                    </div>
+                `
+            });
+            
+            marker.addListener('click', () => {
+                infoWindow.open(map, marker);
+            });
+            
+            markers.push(marker);
+        }
+    });
+}
+
+// Mostrar evento no mapa
+function showOnMap(lat, lng) {
+    if (map) {
+        map.setCenter({ lat, lng });
+        map.setZoom(16);
+        
+        // Scroll para a seção do mapa
+        const mapSection = document.getElementById('map');
+        if (mapSection) {
+            mapSection.scrollIntoView({ behavior: 'smooth' });
         }
     }
 }
 
 // Download do app
 function downloadApp() {
-    showNotification('Redirecionando para download...', 'info');
-    setTimeout(() => {
-        window.open('/api/download/neonlights.apk', '_blank');
-    }, 1000);
-}
-
-// Mostrar demo
-function showDemo() {
-    showNotification('Demo em desenvolvimento...', 'info');
-}
-
-// Sistema de notificações
-function showNotification(message, type = 'info') {
-    const container = document.getElementById('notification-container') || createNotificationContainer();
-    
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <span>${message}</span>
-        <button class="notification-close">&times;</button>
-    `;
-    
-    container.appendChild(notification);
-    
-    // Auto remove após 5 segundos
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove();
-        }
-    }, 5000);
-    
-    // Botão de fechar
-    notification.querySelector('.notification-close').addEventListener('click', () => {
-        notification.remove();
-    });
-}
-
-function createNotificationContainer() {
-    const container = document.createElement('div');
-    container.id = 'notification-container';
-    container.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 10000;
-    `;
-    document.body.appendChild(container);
-    return container;
-}
-
-// Adicionar estilos para notificações
-const notificationStyles = document.createElement('style');
-notificationStyles.textContent = `
-    .notification {
-        background: #1a1a1a;
-        color: #fff;
-        padding: 15px 20px;
-        margin-bottom: 10px;
-        border-radius: 8px;
-        border-left: 4px solid #00ffff;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        min-width: 300px;
-        animation: slideIn 0.3s ease;
-    }
-    
-    .notification-success {
-        border-left-color: #00ff00;
-    }
-    
-    .notification-error {
-        border-left-color: #ff1493;
-    }
-    
-    .notification-info {
-        border-left-color: #00ffff;
-    }
-    
-    .notification-close {
-        background: none;
-        border: none;
-        color: #fff;
-        font-size: 18px;
-        cursor: pointer;
-        margin-left: 15px;
-    }
-    
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-`;
-document.head.appendChild(notificationStyles);
-
-// Função para mostrar detalhes do evento
-function showEventDetails(eventId) {
-    const events = getMockEvents();
-    const event = events.find(e => e.id === eventId);
-    
-    if (!event) {
-        showNotification('Evento não encontrado', 'error');
-        return;
-    }
-    
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content" style="max-width: 600px;">
+    const downloadModal = document.createElement('div');
+    downloadModal.className = 'modal';
+    downloadModal.innerHTML = `
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
             <span class="close">&times;</span>
-            <div class="event-details">
-                <img src="${event.image_url || 'https://via.placeholder.com/600x300/00FFFF/000000?text=' + encodeURIComponent(event.title)}" alt="${event.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
-                <h2>${event.title}</h2>
-                <p class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
-                <p class="event-time"><i class="fas fa-clock"></i> ${event.date} às ${event.time}</p>
-                <p class="event-price"><i class="fas fa-ticket-alt"></i> R$ ${event.price ? event.price.toFixed(2) : 'Gratuito'}</p>
-                <p class="event-description">${event.description}</p>
-                <div class="event-actions">
-                    <button class="btn btn-primary">Comprar Ingresso</button>
-                    <button class="btn btn-secondary">Compartilhar</button>
+            <h2>Baixar NeonLights</h2>
+            <div class="download-options">
+                <p>Escolha sua plataforma:</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; margin: 2rem 0;">
+                    <button class="btn btn-primary" onclick="downloadAPK()">
+                        <i class="fab fa-android"></i>
+                        Baixar APK (Android)
+                    </button>
+                    <button class="btn btn-secondary" onclick="showNotification('Em breve na App Store!', 'info')">
+                        <i class="fab fa-apple"></i>
+                        iOS (Em breve)
+                    </button>
                 </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    O APK Android permite instalar o app diretamente no seu celular.
+                    Certifique-se de permitir instalação de fontes desconhecidas.
+                </p>
             </div>
         </div>
     `;
-    
-    document.body.appendChild(modal);
-    modal.style.display = 'block';
+
+    document.body.appendChild(downloadModal);
+    downloadModal.style.display = 'block';
     document.body.style.overflow = 'hidden';
-    
-    const closeBtn = modal.querySelector('.close');
+
+    const closeBtn = downloadModal.querySelector('.close');
     closeBtn.addEventListener('click', () => {
-        modal.remove();
+        downloadModal.remove();
         document.body.style.overflow = 'auto';
     });
-    
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.remove();
+
+    downloadModal.addEventListener('click', (e) => {
+        if (e.target === downloadModal) {
+            downloadModal.remove();
             document.body.style.overflow = 'auto';
         }
     });
 }
+
+// Download do APK
+function downloadAPK() {
+    showNotification('Preparando download do APK...', 'info');
+    
+    // Simular download (em uma implementação real, isso seria um link para o APK)
+    setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = '/api/download/neonlights.apk';
+        link.download = 'NeonLights.apk';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showNotification('Download iniciado! Verifique sua pasta de downloads.', 'success');
+    }, 2000);
+}
+
+// Mostrar demo
+function showDemo() {
+    const demoModal = document.createElement('div');
+    demoModal.className = 'modal';
+    demoModal.innerHTML = `
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close">&times;</span>
+            <h2>Demo do NeonLights</h2>
+            <div class="demo-container">
+                <div style="position: relative; width: 100%; height: 450px; background: #000; border-radius: 10px; overflow: hidden;">
+                    <iframe 
+                        width="100%" 
+                        height="100%" 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <p style="margin-top: 1rem; color: var(--text-secondary); text-align: center;">
+                    Veja como o NeonLights funciona no seu celular!
+                </p>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(demoModal);
+    demoModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+
+    const closeBtn = demoModal.querySelector('.close');
+    closeBtn.addEventListener('click', () => {
+        demoModal.remove();
+        document.body.style.overflow = 'auto';
+    });
+
+    demoModal.addEventListener('click', (e) => {
+        if (e.target === demoModal) {
+            demoModal.remove();
+            document.body.style.overflow = 'auto';
+        }
+    });
+}
+
+// Modal de pagamento
+function showPaymentModal(eventTitle, price) {
+    const paymentModal = document.createElement('div');
+    paymentModal.className = 'modal';
+    paymentModal.innerHTML = `
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close">&times;</span>
+            <h2>Finalizar Compra</h2>
+            <div class="payment-form">
+                <div class="payment-summary">
+                    <h3>Resumo do Pedido</h3>
+                    <div class="summary-item">
+                        <span>${eventTitle}</span>
+                        <span>R$ ${price.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Taxa de serviço</span>
+                        <span>R$ ${(price * 0.1).toFixed(2)}</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>R$ ${(price * 1.1).toFixed(2)}</span>
+                    </div>
+                </div>
+                <div class="payment-methods">
+                    <h3>Forma de Pagamento</h3>
+                    <div class="payment-options">
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="pix" checked>
+                            <span class="payment-label">
+                                <i class="fas fa-qrcode"></i>
+                                PIX
+                            </span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="credit">
+                            <span class="payment-label">
+                                <i class="fas fa-credit-card"></i>
+                                Cartão de Crédito
+                            </span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="debit">
+                            <span class="payment-label">
+                                <i class="fas fa-credit-card"></i>
+                                Cartão de Débito
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-full" onclick="processPayment()">Finalizar Pagamento</button>
+                <p style="color: var(--text-secondary); font-size: 0.8rem; text-align: center; margin-top: 1rem;">
+                    * Esta é uma simulação. Nenhum pagamento real será processado.
+                </p>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(paymentModal);
+    paymentModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+
+    const closeBtn = paymentModal.querySelector('.close');
+    closeBtn.addEventListener('click', () => {
+        paymentModal.remove();
+        document.body.style.overflow = 'auto';
+    });
+
+    paymentModal.addEventListener('click', (e) => {
+        if (e.target === paymentModal) {
+            paymentModal.remove();
+            document.body.style.overflow = 'auto';
+        }
+    });
+}
+
+// Processar pagamento
+function processPayment() {
+    const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+    
+    showNotification('Processando pagamento...', 'info');
+    
+    setTimeout(() => {
+        showNotification(`Pagamento via ${selectedPayment.toUpperCase()} processado com sucesso! (Simulação)`, 'success');
+        
+        const paymentModal = document.querySelector('.modal');
+        if (paymentModal) {
+            paymentModal.remove();
+            document.body.style.overflow = 'auto';
+        }
+    }, 2000);
+}
+
+// Confirmar presença
+function confirmPresence(eventId) {
+    if (!currentUser) {
+        showNotification('Faça login para confirmar presença', 'warning');
+        return;
+    }
+    
+    showNotification('Presença confirmada!', 'success');
+}
+
+// Função para mostrar notificações
+function showNotification(message, type = 'info') {
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-${getNotificationIcon(type)}"></i>
+            <span>${message}</span>
+            <button class="notification-close">&times;</button>
+        </div>
+    `;
+
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: ${getNotificationColor(type)};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        z-index: 3000;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        max-width: 350px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', () => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => notification.remove(), 300);
+    });
+
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.style.transform = 'translateX(400px)';
+            setTimeout(() => notification.remove(), 300);
+        }
+    }, 5000);
+}
+
+function getNotificationIcon(type) {
+    switch(type) {
+        case 'success': return 'check-circle';
+        case 'error': return 'exclamation-circle';
+        case 'warning': return 'exclamation-triangle';
+        default: return 'info-circle';
+    }
+}
+
+function getNotificationColor(type) {
+    switch(type) {
+        case 'success': return 'linear-gradient(45deg, #32cd32, #228b22)';
+        case 'error': return 'linear-gradient(45deg, #ff1493, #dc143c)';
+        case 'warning': return 'linear-gradient(45deg, #ffd700, #ffa500)';
+        default: return 'linear-gradient(45deg, #00ffff, #0080ff)';
+    }
+}
+
+// Funções globais para serem chamadas pelos botões
+window.showEventDetails = showEventDetails;
+window.showOnMap = showOnMap;
+window.downloadAPK = downloadAPK;
+window.processPayment = processPayment;
+window.confirmPresence = confirmPresence;
+window.logout = logout;
+window.showCreateEventModal = function() {
+    showNotification('Funcionalidade de criar eventos em desenvolvimento', 'info');
+};
+window.showMyEvents = function() {
+    showNotification('Funcionalidade de meus eventos em desenvolvimento', 'info');
+};
