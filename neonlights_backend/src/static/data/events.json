@@ -1,0 +1,50 @@
+[
+    {
+        "id": "1",
+        "title": "Open da Cucko",
+        "category": "funk",
+        "location": "CUCKO, Rua General Lima e Silva, 1037 Centro Histórico, Porto Alegre, RS",
+        "date": "2025-10-15",
+        "time": "22:00",
+        "price": 65.00,
+        "age_restriction": "18+",
+        "description": "O SEXTOU MAIS AGUARDADO DO MÊS CHEGOU. OPEN BAR de Budweiser, Combinho com vodka Smirnoff, Catucombo, Catuaba, Hi-Fi, Gin Tônica, Tropical Gin, Refri e Água, liberados até as 05H. Pistão: Funk Hits (DJs FranFo Machado, Rafa Coppetti, Gui Almeida). Pistinha: Pop e o que os DJs quiserem (DJs Tribino, Natiê, Davi).",
+        "image_url": "/static/images/open_cucko.jpg",
+        "coordinates": {
+            "latitude": -30.0346,
+            "longitude": -51.2177
+        }
+    },
+    {
+        "id": "2",
+        "title": "Baile Emo",
+        "category": "rock",
+        "location": "Amnesia Bar, Rua Ibipetuba, 182, Vila Prudente, São Paulo - SP",
+        "date": "2025-10-20",
+        "time": "22:00",
+        "price": 90.00,
+        "age_restriction": "18+",
+        "description": "O Baile Emo volta a São Paulo para uma noite sombria e inesquecível: a edição especial NIGHTMARE. Tocando o melhor do metalcore, post-hardcore, pop-punk, nu metal e emocore! Evento com Karaokê Avenged Sevenfold, decoração temática, Tinder Emo com stickers exclusivos e Tequila Gun.",
+        "image_url": "/static/images/baile_emo.jpg",
+        "coordinates": {
+            "latitude": -23.5880,
+            "longitude": -46.5682
+        }
+    },
+    {
+        "id": "3",
+        "title": "Orion Festival",
+        "category": "eletronica",
+        "location": "Fazenda Orion, Estrada Rural KM 15, Campos do Jordão - SP",
+        "date": "2025-11-01",
+        "time": "18:00",
+        "price": 180.00,
+        "age_restriction": "18+",
+        "description": "O maior festival de música eletrônica de 7 dias do Brasil! Passaporte completo com área de camping inclusa, barracas permitidas. Lineup com os melhores DJs nacionais e internacionais de psytrance, progressive, full-on e dark psy. Uma experiência única de imersão na natureza e música eletrônica.",
+        "image_url": "/static/images/orion_festival.jpg",
+        "coordinates": {
+            "latitude": -22.7377,
+            "longitude": -45.5947
+        }
+    }
+]
