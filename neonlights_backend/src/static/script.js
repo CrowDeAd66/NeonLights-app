@@ -329,27 +329,27 @@ function displayEvents(events) {
     eventsGrid.innerHTML = '';
     
     events.forEach(event => {
-        const eventElement = document.createElement('div');
-        eventElement.className = 'event-item';
-        eventElement.setAttribute('data-category', event.category);
+        const eventElement = document.createElement("div");
+        eventElement.className = "event-item";
+        eventElement.setAttribute("data-category", event.category);
         
-        const distanceText = event.distance ? `<p class="event-distance"><i class="fas fa-route"></i> ${event.distance} km</p>` : '';
+        const distanceText = event.distance ? `<p class="event-distance"><i class="fas fa-route"></i> ${event.distance} km</p>` : "";
         
         eventElement.innerHTML = `
             <div class="event-image">
-                <img src="${event.image_url || 'https://via.placeholder.com/300x200/00FFFF/000000?text=' + encodeURIComponent(event.title)}" alt="${event.title}">
+                <img src="${event.image || 'https://via.placeholder.com/300x200/00FFFF/000000?text=' + encodeURIComponent(event.name)}" alt="${event.name}">
                 <div class="event-overlay">
                     <button class="btn btn-small" onclick="showEventDetails(${event.id})">Ver Detalhes</button>
                 </div>
             </div>
             <div class="event-content">
-                <h3>${event.title}</h3>
+                <h3>${event.name}</h3>
                 <p class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
                 <p class="event-time"><i class="fas fa-clock"></i> ${event.date} às ${event.time}</p>
                 ${distanceText}
-                <p class="event-price">R$ ${event.price ? event.price.toFixed(2) : 'Gratuito'}</p>
+                <p class="event-price">${event.price}</p>
                 <div class="event-tags">
-                    <span class="tag">${event.age_restriction || '18+'}</span>
+                    <span class="tag">${event.age_rating || '18+'}</span>
                     <span class="tag">${event.category}</span>
                 </div>
             </div>
@@ -369,30 +369,30 @@ async function showEventDetails(eventId) {
     try {
         const event = await apiRequest(`/api/events/${eventId}`);
         
-        const eventModal = document.createElement('div');
-        eventModal.className = 'modal';
+        const eventModal = document.createElement("div");
+        eventModal.className = "modal";
         eventModal.innerHTML = `
             <div class="modal-content" style="max-width: 600px;">
                 <span class="close">&times;</span>
-                <h2>${event.title}</h2>
+                <h2>${event.name}</h2>
                 <div class="event-details-modal">
                     <div class="event-image-modal">
-                        <img src="${event.image_url || 'https://via.placeholder.com/500x300/00FFFF/000000?text=' + encodeURIComponent(event.title)}" alt="${event.title}">
+                        <img src="${event.image || 'https://via.placeholder.com/500x300/00FFFF/000000?text=' + encodeURIComponent(event.name)}" alt="${event.name}">
                     </div>
                     <div class="event-info-modal">
                         <p><i class="fas fa-map-marker-alt"></i> <strong>Local:</strong> ${event.location}</p>
                         <p><i class="fas fa-clock"></i> <strong>Data/Hora:</strong> ${event.date} às ${event.time}</p>
                         <p><i class="fas fa-music"></i> <strong>Categoria:</strong> ${event.category}</p>
-                        <p><i class="fas fa-users"></i> <strong>Idade:</strong> ${event.age_restriction || '18+'}</p>
-                        <p><i class="fas fa-tag"></i> <strong>Preço:</strong> R$ ${event.price ? event.price.toFixed(2) : 'Gratuito'}</p>
-                        <p><i class="fas fa-user"></i> <strong>Criado por:</strong> ${event.creator}</p>
+                        <p><i class="fas fa-users"></i> <strong>Idade:</strong> ${event.age_rating || '18+'}</p>
+                        <p><i class="fas fa-tag"></i> <strong>Preço:</strong> ${event.price}</p>
+                        <p><i class="fas fa-user"></i> <strong>Criado por:</strong> ${event.creator || 'NeonLights'}</p>
                         ${event.distance ? `<p><i class="fas fa-route"></i> <strong>Distância:</strong> ${event.distance} km</p>` : ''}
                         <div class="event-description">
                             <h4>Descrição</h4>
                             <p>${event.description || 'Sem descrição disponível.'}</p>
                         </div>
                         <div class="event-actions">
-                            <button class="btn btn-primary" onclick="showPaymentModal('${event.title}', ${event.price || 0})">Comprar Ingresso</button>
+                            <button class="btn btn-primary" onclick="showPaymentModal('${event.name}', ${event.lotes ? event.lotes[0].preco : 0})">Comprar Ingresso</button>
                             <button class="btn btn-secondary" onclick="confirmPresence(${event.id})">Confirmar Presença</button>
                             ${event.latitude && event.longitude ? `<button class="btn btn-secondary" onclick="showOnMap(${event.latitude}, ${event.longitude})">Ver no Mapa</button>` : ''}
                         </div>
