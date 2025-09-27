@@ -339,7 +339,7 @@ function displayEvents(events) {
             <div class="event-image">
                 <img src="${event.image || 'https://via.placeholder.com/300x200/00FFFF/000000?text=' + encodeURIComponent(event.name)}" alt="${event.name}">
                 <div class="event-overlay">
-                    <button class="btn btn-small" onclick="showEventDetails(${event.id})">Ver Detalhes</button>
+                    <button class="btn btn-secondary btn-small" onclick="showEventDetails(${event.id})">Ver Detalhes</button>
                 </div>
             </div>
             <div class="event-content">
