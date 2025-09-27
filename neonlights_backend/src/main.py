@@ -156,31 +156,58 @@ def get_events():
             events = response.data
             return jsonify(events)
         else:
-            # Usar dados de exemplo se Supabase não estiver disponível
+            # Usar dados dos eventos atualizados
             events = [
                 {
                     "id": 1,
-                    "name": "Festival de Música Eletrônica",
-                    "category": "eletronica",
-                    "date": "2024-10-15",
-                    "location": "São Paulo, SP",
-                    "description": "O maior festival de música eletrônica do Brasil"
+                    "name": "Open da Cucko",
+                    "category": "funk",
+                    "date": "2024-10-26",
+                    "time": "23:00",
+                    "location": "Cucko, Porto Alegre, RS",
+                    "description": "O sextou mais aguardado do mês! Open bar com Budweiser, vodka Smirnoff, Catuaba e muito mais até as 05h. Funk hits no pistão e pop na pistinha.",
+                    "price": "R$ 65,00",
+                    "age_rating": "18+",
+                    "image": "/static/open-cucko.jpg",
+                    "lotes": [
+                        {"nome": "Lote 1", "preco": 65.00},
+                        {"nome": "Lote 2", "preco": 75.00},
+                        {"nome": "Lote 3", "preco": 85.00}
+                    ]
                 },
                 {
                     "id": 2,
-                    "name": "Rock in Rio",
+                    "name": "Baile Emo",
                     "category": "rock",
-                    "date": "2024-11-20",
-                    "location": "Rio de Janeiro, RJ",
-                    "description": "Festival internacional de rock"
+                    "date": "2024-11-15",
+                    "time": "23:00",
+                    "location": "Bar Opinião, Porto Alegre, RS",
+                    "description": "Baile triste desde 2020! Shows cover exclusivos, tributos a bandas emo, Tinder Emo e welcome shots. A festa mais emo de Porto Alegre.",
+                    "price": "R$ 90,00",
+                    "age_rating": "18+",
+                    "image": "/static/baile-emo.jpg",
+                    "lotes": [
+                        {"nome": "Lote 1", "preco": 90.00},
+                        {"nome": "Lote 2", "preco": 100.00},
+                        {"nome": "Lote 3", "preco": 110.00}
+                    ]
                 },
                 {
                     "id": 3,
-                    "name": "Baile Funk",
-                    "category": "funk",
-                    "date": "2024-12-05",
-                    "location": "Rio de Janeiro, RJ",
-                    "description": "A melhor festa funk da cidade"
+                    "name": "Orion Festival",
+                    "category": "eletronica",
+                    "date": "2024-12-20",
+                    "time": "18:00",
+                    "location": "Canoas, RS",
+                    "description": "O maior festival multicultural do Sul do Brasil! 7 dias de música eletrônica, psytrance e trance com camping. Artistas nacionais e internacionais.",
+                    "price": "R$ 180,00",
+                    "age_rating": "18+",
+                    "image": "/static/orion-festival.jpg",
+                    "lotes": [
+                        {"nome": "Passaporte Lote 1", "preco": 180.00},
+                        {"nome": "Passaporte Lote 2", "preco": 210.00},
+                        {"nome": "Passaporte Lote 3", "preco": 240.00}
+                    ]
                 }
             ]
             return jsonify(events)

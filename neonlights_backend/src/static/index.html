@@ -107,78 +107,59 @@
                 <button class="filter-btn" data-filter="funk">Funk</button>
             </div>
             <div class="events-grid">
-                <div class="event-item" data-category="eletronica">
+                <div class="event-item" data-category="funk">
                     <div class="event-image">
-                        <img src="https://via.placeholder.com/300x200/00FFFF/000000?text=Festa+Neon" alt="Festa Neon">
+                        <img src="/static/open-cucko.jpg" alt="Open da Cucko">
                         <div class="event-overlay">
                             <button class="btn btn-small">Ver Detalhes</button>
                         </div>
                     </div>
                     <div class="event-content">
-                        <h3>Festa Neon Underground</h3>
-                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Vila Madalena, SP</p>
-                        <p class="event-time"><i class="fas fa-clock"></i> Hoje, 22:00</p>
-                        <p class="event-price">R$ 25,00</p>
+                        <h3>Open da Cucko</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Cucko, Porto Alegre, RS</p>
+                        <p class="event-time"><i class="fas fa-clock"></i> 26/10, 23:00</p>
+                        <p class="event-price">R$ 65,00</p>
                         <div class="event-tags">
                             <span class="tag">18+</span>
-                            <span class="tag">Eletrônica</span>
+                            <span class="tag">Funk</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="event-item" data-category="rock">
                     <div class="event-image">
-                        <img src="https://via.placeholder.com/300x200/FF1493/000000?text=Rock+Night" alt="Rock Night">
+                        <img src="/static/baile-emo.jpg" alt="Baile Emo">
                         <div class="event-overlay">
                             <button class="btn btn-small">Ver Detalhes</button>
                         </div>
                     </div>
                     <div class="event-content">
-                        <h3>Rock Night Classic</h3>
-                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Bela Vista, SP</p>
-                        <p class="event-time"><i class="fas fa-clock"></i> Amanhã, 21:00</p>
-                        <p class="event-price">R$ 30,00</p>
-                        <div class="event-tags">
-                            <span class="tag">21+</span>
-                            <span class="tag">Rock</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="event-item" data-category="sertanejo">
-                    <div class="event-image">
-                        <img src="https://via.placeholder.com/300x200/32CD32/000000?text=Sertanejo+Live" alt="Sertanejo Live">
-                        <div class="event-overlay">
-                            <button class="btn btn-small">Ver Detalhes</button>
-                        </div>
-                    </div>
-                    <div class="event-content">
-                        <h3>Sertanejo Live</h3>
-                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Mooca, SP</p>
-                        <p class="event-time"><i class="fas fa-clock"></i> Sábado, 20:00</p>
-                        <p class="event-price">R$ 40,00</p>
+                        <h3>Baile Emo</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Bar Opinião, Porto Alegre, RS</p>
+                        <p class="event-time"><i class="fas fa-clock"></i> 15/11, 23:00</p>
+                        <p class="event-price">R$ 90,00</p>
                         <div class="event-tags">
                             <span class="tag">18+</span>
-                            <span class="tag">Sertanejo</span>
+                            <span class="tag">Emo</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="event-item" data-category="funk">
+                <div class="event-item" data-category="eletronica">
                     <div class="event-image">
-                        <img src="https://via.placeholder.com/300x200/FFD700/000000?text=Baile+Funk" alt="Baile Funk">
+                        <img src="/static/orion-festival.jpg" alt="Orion Festival">
                         <div class="event-overlay">
                             <button class="btn btn-small">Ver Detalhes</button>
                         </div>
                     </div>
                     <div class="event-content">
-                        <h3>Baile Funk da Quebrada</h3>
-                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Cidade Tiradentes, SP</p>
-                        <p class="event-time"><i class="fas fa-clock"></i> Domingo, 19:00</p>
-                        <p class="event-price">R$ 15,00</p>
+                        <h3>Orion Festival</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Canoas, RS</p>
+                        <p class="event-time"><i class="fas fa-clock"></i> 20/12, 18:00</p>
+                        <p class="event-price">R$ 180,00</p>
                         <div class="event-tags">
-                            <span class="tag">16+</span>
-                            <span class="tag">Funk</span>
+                            <span class="tag">18+</span>
+                            <span class="tag">Eletrônica</span>
                         </div>
                     </div>
                 </div>
@@ -194,35 +175,44 @@
             </h2>
             <div class="map-container">
                 <div class="map-placeholder">
-                    <div class="map-overlay">
-                        <i class="fas fa-map-marked-alt"></i>
-                        <h3>Mapa Interativo</h3>
-                        <p>Visualize todos os eventos próximos a você</p>
-                        <button class="btn btn-primary">Ativar Localização</button>
+                    <img src="/static/mapa-porto-alegre.jpg" alt="Mapa de Porto Alegre - Cidade Baixa" class="interactive-map">
+                    <div class="map-pins">
+                        <div class="map-pin pin-cucko" data-event="Open da Cucko" style="top: 65%; left: 45%;">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="pin-tooltip">Open da Cucko</div>
+                        </div>
+                        <div class="map-pin pin-opiniao" data-event="Baile Emo" style="top: 70%; left: 50%;">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="pin-tooltip">Baile Emo</div>
+                        </div>
+                        <div class="map-pin pin-orion" data-event="Orion Festival" style="top: 60%; left: 55%;">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="pin-tooltip">Orion Festival</div>
+                        </div>
                     </div>
                 </div>
                 <div class="map-sidebar">
-                    <h3>Eventos Próximos</h3>
+                    <h3>Eventos em Porto Alegre</h3>
                     <div class="nearby-events">
                         <div class="nearby-event">
                             <div class="event-marker neon-bg-cyan"></div>
                             <div class="event-details">
-                                <h4>Festa Neon Underground</h4>
-                                <p>0.5 km de distância</p>
+                                <h4>Open da Cucko</h4>
+                                <p>Cidade Baixa - Funk & Open Bar</p>
                             </div>
                         </div>
                         <div class="nearby-event">
                             <div class="event-marker neon-bg-pink"></div>
                             <div class="event-details">
-                                <h4>Rock Night Classic</h4>
-                                <p>1.2 km de distância</p>
+                                <h4>Baile Emo</h4>
+                                <p>Bar Opinião - Festa Emo</p>
                             </div>
                         </div>
                         <div class="nearby-event">
                             <div class="event-marker neon-bg-green"></div>
                             <div class="event-details">
-                                <h4>Sertanejo Live</h4>
-                                <p>2.1 km de distância</p>
+                                <h4>Orion Festival</h4>
+                                <p>Canoas - Festival Eletrônico</p>
                             </div>
                         </div>
                     </div>
