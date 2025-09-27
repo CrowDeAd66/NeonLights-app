@@ -1036,9 +1036,101 @@ html {
 }
 
 /* Estilos específicos para o modal de cadastro */
-.register-modal-content {
+.registe.modal-content {
     max-width: 600px;
-    max-height: 90vh;
+    max-height: 90vh; /* Limita a altura máxima do modal */
+    overflow-y: auto; /* Adiciona scroll vertical se o conteúdo exceder a altura */
+}
+
+.event-details-modal {
+    display: flex;
+    flex-direction: column; /* Altera para coluna em telas menores */
+    gap: 20px;
+}
+
+.event-image-modal {
+    flex: 1;
+    width: 100%; /* Garante que a imagem ocupe a largura total */
+}
+
+.event-image-modal img {
+    max-width: 100%; /* Garante que a imagem não exceda a largura do contêiner */
+    height: auto;
+    max-height: 300px; /* Limita a altura da imagem no modal */
+    object-fit: cover; /* Garante que a imagem cubra o espaço sem distorcer */
+    border-radius: 10px;
+}
+
+/* Responsividade para o modal de detalhes */
+@media (min-width: 768px) {
+    .event-details-modal {
+        flex-direction: row; /* Volta para linha em telas maiores */
+    }
+}ge-modal {
+    flex: 1;
+    width: 100%; /* Garante que a imagem ocupe a largura total */
+}
+
+.event-image-modal img {
+    max-width: 100%; /* Garante que a imagem não exceda a largura do contêiner */
+    height: auto;
+    max-height: 300px; /* Limita a altura da imagem no modal */
+    object-fit: cover; /* Garante que a imagem cubra o espaço sem distorcer */
+    border-radius: 10px;
+}
+
+/* Responsividade para o modal de detalhes */
+@media (min-width: 768px) {
+    .event-details-modal {
+        flex-direction: row; /* Volta para linha em telas maiores */
+    }
+}e-modal {
+    flex: 1;
+    width: 100%; /* Garante que a imagem ocupe a largura total */
+}
+
+.event-image-modal img {
+    max-width: 100%; /* Garante que a imagem não exceda a largura do contêiner */
+    height: auto;
+    max-height: 300px; /* Limita a altura da imagem no modal */
+    object-fit: cover; /* Garante que a imagem cubra o espaço sem distorcer */
+    border-radius: 10px;
+}
+
+/* Responsividade para o modal de detalhes */
+@media (min-width: 768px) {
+    .event-details-modal {
+        flex-direction: row; /* Volta para linha em telas maiores */
+    }
+}}    max-height: 90vh; /* Limita a altura máxima do modal */
+    overflow-y: auto; /* Adiciona scroll vertical se o conteúdo exceder a altura */
+}
+
+.event-details-modal {
+    display: flex;
+    flex-direction: column; /* Altera para coluna em telas menores */
+    gap: 20px;
+}
+
+.event-image-modal {
+    flex: 1;
+    width: 100%; /* Garante que a imagem ocupe a largura total */
+}
+
+.event-image-modal img {
+    width: 100%;
+    height: auto;
+    max-height: 300px; /* Limita a altura da imagem no modal */
+    object-fit: cover; /* Garante que a imagem cubra o espaço sem distorcer */
+    border-radius: 10px;
+}
+
+/* Responsividade para o modal de detalhes */
+@media (min-width: 768px) {
+    .event-details-modal {
+        flex-direction: row; /* Volta para linha em telas maiores */
+    }
+}  max-height: 90vh;
     overflow-y: auto;
     margin: 5% auto;
 }
@@ -1359,3 +1451,32 @@ html {
         transform: translate(-50%, -100%) scale(1);
     }
 }
+
+
+
+/* Correções para o Modal de Detalhes do Evento */
+.modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.event-details-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.event-image-modal img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+@media (min-width: 768px) {
+    .event-details-modal {
+        flex-direction: row;
+    }
+}
+
