@@ -1,0 +1,19 @@
+
+# NeonLights APK Demo
+# Este é um arquivo de demonstração
+# Em uma implementação real, este seria o APK compilado do aplicativo NeonLights
+# 
+# Para instalar:
+# 1. Baixe este arquivo
+# 2. Ative "Fontes desconhecidas" nas configurações do Android
+# 3. Instale o APK
+#
+# Funcionalidades incluídas:
+# - Interface neon responsiva
+# - Geolocalização real
+# - Integração com Google Maps
+# - Sistema de autenticação
+# - Gerenciamento de eventos
+# - Notificações push (simuladas)
+#
+# Powered by CrowDeAd
