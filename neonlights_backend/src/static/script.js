@@ -969,3 +969,420 @@ window.showCreateEventModal = function() {
 window.showMyEvents = function() {
     showNotification('Funcionalidade de meus eventos em desenvolvimento', 'info');
 };
+
+// Funcionalidades do formulário de cadastro
+document.addEventListener('DOMContentLoaded', function() {
+    const registerBtn = document.querySelector('.register-btn');
+    const registerModal = document.getElementById('registerModal');
+    const loginModal = document.getElementById('loginModal');
+    const registerLink = document.querySelector('.register-link');
+    const loginLink = document.querySelector('.login-link');
+    const registerForm = document.querySelector('.register-form');
+    
+    // Abrir modal de cadastro pelo botão do menu
+    if (registerBtn && registerModal) {
+        registerBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            openModal(registerModal);
+        });
+    }
+    
+    // Navegação entre modais
+    if (registerLink && registerModal && loginModal) {
+        registerLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeModal(loginModal);
+            setTimeout(() => openModal(registerModal), 300);
+        });
+    }
+    
+    if (loginLink && loginModal && registerModal) {
+        loginLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeModal(registerModal);
+            setTimeout(() => openModal(loginModal), 300);
+        });
+    }
+    
+    // Fechar modais
+    const closeButtons = document.querySelectorAll('.modal .close');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modal = this.closest('.modal');
+            closeModal(modal);
+        });
+    });
+    
+    // Fechar modal ao clicar fora
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            closeModal(e.target);
+        }
+    });
+    
+    // Formulário de cadastro
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleRegister);
+    }
+    
+    // Máscaras para campos
+    setupInputMasks();
+    
+    // Validação em tempo real
+    setupFormValidation();
+});
+
+// Funções auxiliares para modais
+function openModal(modal) {
+    if (modal) {
+        modal.style.display = 'block';
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeModal(modal) {
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }, 300);
+    }
+}
+
+// Handle do formulário de cadastro
+async function handleRegister(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const data = {};
+    
+    // Coletar dados do formulário
+    data.firstName = document.getElementById('firstName').value;
+    data.lastName = document.getElementById('lastName').value;
+    data.email = document.getElementById('registerEmail').value;
+    data.phone = document.getElementById('phone').value;
+    data.cpf = document.getElementById('cpf').value;
+    data.birthDate = document.getElementById('birthDate').value;
+    data.gender = document.getElementById('gender').value;
+    data.username = document.getElementById('username').value;
+    data.password = document.getElementById('registerPassword').value;
+    data.confirmPassword = document.getElementById('confirmPassword').value;
+    data.terms = document.getElementById('terms').checked;
+    data.newsletter = document.getElementById('newsletter').checked;
+    
+    // Coletar preferências musicais
+    const musicPreferences = [];
+    document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked').forEach(checkbox => {
+        musicPreferences.push(checkbox.value);
+    });
+    data.musicPreferences = musicPreferences;
+    
+    // Validações
+    if (!validateRegisterForm(data)) {
+        return;
+    }
+    
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+    
+    try {
+        // Simular cadastro (por enquanto fictício)
+        await simulateRegister(data);
+        
+        showNotification('Cadastro realizado com sucesso! Bem-vindo ao NeonLights!', 'success');
+        closeModal(document.getElementById('registerModal'));
+        
+        // Simular login automático
+        currentUser = {
+            id: 'demo-' + Date.now(),
+            username: data.username,
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName
+        };
+        updateUIForLoggedUser();
+        
+    } catch (error) {
+        showNotification(error.message, 'error');
+    } finally {
+        submitBtn.classList.remove('loading');
+        submitBtn.disabled = false;
+    }
+}
+
+// Simulação de cadastro (fictício)
+async function simulateRegister(data) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            // Simular validação de email único
+            if (data.email === 'teste@teste.com') {
+                reject(new Error('Este e-mail já está cadastrado'));
+                return;
+            }
+            
+            // Simular sucesso
+            resolve({
+                message: 'Usuário cadastrado com sucesso',
+                user: {
+                    id: 'demo-' + Date.now(),
+                    username: data.username,
+                    email: data.email
+                }
+            });
+        }, 2000); // Simular delay de rede
+    });
+}
+
+// Validação do formulário de cadastro
+function validateRegisterForm(data) {
+    // Validar campos obrigatórios
+    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'cpf', 'birthDate', 'gender', 'username', 'password', 'confirmPassword'];
+    
+    for (const field of requiredFields) {
+        if (!data[field] || data[field].trim() === '') {
+            showNotification(`O campo ${getFieldLabel(field)} é obrigatório`, 'error');
+            return false;
+        }
+    }
+    
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+        showNotification('Por favor, insira um e-mail válido', 'error');
+        return false;
+    }
+    
+    // Validar CPF (formato básico)
+    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+    if (!cpfRegex.test(data.cpf)) {
+        showNotification('Por favor, insira um CPF válido (000.000.000-00)', 'error');
+        return false;
+    }
+    
+    // Validar telefone
+    const phoneRegex = /^\(\d{2}\) \d{4,5}-\d{4}$/;
+    if (!phoneRegex.test(data.phone)) {
+        showNotification('Por favor, insira um telefone válido ((11) 99999-9999)', 'error');
+        return false;
+    }
+    
+    // Validar idade mínima (16 anos)
+    const birthDate = new Date(data.birthDate);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear();
+    if (age < 16) {
+        showNotification('Você deve ter pelo menos 16 anos para se cadastrar', 'error');
+        return false;
+    }
+    
+    // Validar senha
+    if (data.password.length < 6) {
+        showNotification('A senha deve ter pelo menos 6 caracteres', 'error');
+        return false;
+    }
+    
+    // Validar confirmação de senha
+    if (data.password !== data.confirmPassword) {
+        showNotification('As senhas não coincidem', 'error');
+        return false;
+    }
+    
+    // Validar termos
+    if (!data.terms) {
+        showNotification('Você deve aceitar os Termos de Uso e Política de Privacidade', 'error');
+        return false;
+    }
+    
+    return true;
+}
+
+// Obter label do campo para mensagens de erro
+function getFieldLabel(field) {
+    const labels = {
+        firstName: 'Nome',
+        lastName: 'Sobrenome',
+        email: 'E-mail',
+        phone: 'Telefone',
+        cpf: 'CPF',
+        birthDate: 'Data de Nascimento',
+        gender: 'Gênero',
+        username: 'Nome de Usuário',
+        password: 'Senha',
+        confirmPassword: 'Confirmação de Senha'
+    };
+    return labels[field] || field;
+}
+
+// Configurar máscaras de entrada
+function setupInputMasks() {
+    const phoneInput = document.getElementById('phone');
+    const cpfInput = document.getElementById('cpf');
+    
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{2})(\d{4,5})(\d{4})/, '($1) $2-$3');
+                e.target.value = value;
+            }
+        });
+    }
+    
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                e.target.value = value;
+            }
+        });
+    }
+}
+
+// Configurar validação em tempo real
+function setupFormValidation() {
+    const inputs = document.querySelectorAll('.register-form input');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+        
+        input.addEventListener('input', function() {
+            // Remover classe de erro quando o usuário começar a digitar
+            this.classList.remove('error');
+        });
+    });
+}
+
+// Validar campo individual
+function validateField(field) {
+    const value = field.value.trim();
+    let isValid = true;
+    
+    // Validações específicas por campo
+    switch (field.id) {
+        case 'registerEmail':
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            isValid = emailRegex.test(value);
+            break;
+        case 'cpf':
+            const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+            isValid = cpfRegex.test(value);
+            break;
+        case 'phone':
+            const phoneRegex = /^\(\d{2}\) \d{4,5}-\d{4}$/;
+            isValid = phoneRegex.test(value);
+            break;
+        case 'registerPassword':
+            isValid = value.length >= 6;
+            break;
+        case 'confirmPassword':
+            const password = document.getElementById('registerPassword').value;
+            isValid = value === password;
+            break;
+    }
+    
+    // Aplicar classe de erro se inválido
+    if (!isValid && value !== '') {
+        field.classList.add('error');
+    } else {
+        field.classList.remove('error');
+    }
+    
+    return isValid;
+}
+
+// Função de notificação melhorada
+function showNotification(message, type = 'info') {
+    // Remover notificação existente
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-message">${message}</span>
+            <button class="notification-close">&times;</button>
+        </div>
+    `;
+    
+    // Adicionar estilos inline para a notificação
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 3000;
+        background: ${type === 'success' ? 'var(--neon-green)' : type === 'error' ? '#ff4444' : 'var(--neon-cyan)'};
+        color: #000;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        animation: slideInRight 0.3s ease;
+        max-width: 400px;
+        font-weight: 500;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Fechar notificação
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', () => {
+        notification.remove();
+    });
+    
+    // Auto-remover após 5 segundos
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Adicionar animação CSS para notificação
+const notificationStyles = document.createElement('style');
+notificationStyles.textContent = `
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .notification-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+    
+    .notification-close {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: inherit;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .form-group input.error {
+        border-color: #ff4444 !important;
+        box-shadow: 0 0 10px rgba(255, 68, 68, 0.3) !important;
+    }
+`;
+document.head.appendChild(notificationStyles);
