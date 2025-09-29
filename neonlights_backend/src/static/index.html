@@ -370,10 +370,18 @@
 
     <!-- Register Modal -->
     <div id="registerModal" class="modal">
-        <div class="modal-content register-modal-content">
+        <div class="modal-content reg        <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Cadastre-se no NeonLights</h2>
-            <form class="register-form">
+            <h2>Criar Conta</h2>
+            
+            <!-- Abas de Tipo de Usuário -->
+            <div class="user-type-tabs">
+                <button type="button" class="tab-btn active" data-tab="usuario">Usuário</button>
+                <button type="button" class="tab-btn" data-tab="produtor">Produtor</button>
+            </div>
+            
+            <!-- Formulário de Usuário -->
+            <form class="register-form" id="usuario-form">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstName">Nome</label>
@@ -476,6 +484,109 @@
                 </div>
                 
                 <button type="submit" class="btn btn-primary btn-full">Criar Conta</button>
+                <p class="form-footer">
+                    Já tem conta? <a href="#" class="neon-link login-link">Entrar</a>
+                </p>
+            </form>
+            
+            <!-- Formulário de Produtor -->
+            <form class="register-form" id="produtor-form" style="display: none;">
+                <div class="form-group">
+                    <label for="produtorNome">Nome do Produtor/Empresa</label>
+                    <input type="text" id="produtorNome" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tipoPessoa">Tipo de Pessoa</label>
+                        <select id="tipoPessoa" required>
+                            <option value="">Selecione</option>
+                            <option value="PF">Pessoa Física</option>
+                            <option value="PJ">Pessoa Jurídica</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cpfCnpj">CPF/CNPJ</label>
+                        <input type="text" id="cpfCnpj" placeholder="000.000.000-00" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="produtorEmail">E-mail de Contato</label>
+                        <input type="email" id="produtorEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="produtorTelefone">Telefone de Contato</label>
+                        <input type="tel" id="produtorTelefone" placeholder="(11) 99999-9999" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="endereco">Endereço Completo</label>
+                    <input type="text" id="endereco" placeholder="Rua, número, bairro, cidade, estado" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="produtorCidade">Cidade</label>
+                        <input type="text" id="produtorCidade" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="produtorEstado">Estado</label>
+                        <select id="produtorEstado" required>
+                            <option value="">Selecione</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="PR">Paraná</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <!-- Adicionar outros estados conforme necessário -->
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="site">Site (opcional)</label>
+                    <input type="url" id="site" placeholder="https://www.seusite.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="instagram">Instagram (opcional)</label>
+                    <input type="text" id="instagram" placeholder="@seuinstagram">
+                </div>
+                
+                <div class="form-group">
+                    <label for="descricaoProdutor">Descrição da Empresa/Atividade</label>
+                    <textarea id="descricaoProdutor" rows="3" placeholder="Descreva sua empresa e tipo de eventos que produz"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="produtorPassword">Senha</label>
+                        <input type="password" id="produtorPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="produtorConfirmPassword">Confirmar Senha</label>
+                        <input type="password" id="produtorConfirmPassword" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-label terms-label">
+                        <input type="checkbox" id="produtorTerms" required>
+                        Aceito os <a href="#" class="neon-link">Termos de Uso</a> e <a href="#" class="neon-link">Política de Privacidade</a>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="produtorNewsletter">
+                        Quero receber novidades e promoções por e-mail
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full">Criar Conta de Produtor</button>
                 <p class="form-footer">
                     Já tem conta? <a href="#" class="neon-link login-link">Entrar</a>
                 </p>

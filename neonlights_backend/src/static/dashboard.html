@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonLights - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body class="dashboard-body">
+    <!-- Header Dashboard -->
+    <header class="dashboard-header">
+        <div class="header-left">
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <span class="username">@usuario123</span>
+                <span class="balance">R$ 150,00</span>
+            </div>
+            <div class="user-avatar" id="userAvatar">
+                <img src="https://via.placeholder.com/40x40/00ffff/000000?text=U" alt="Avatar">
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu Lateral -->
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <div class="logo">
+                <i class="fas fa-bolt neon-icon"></i>
+                <span class="logo-text">NeonLights</span>
+            </div>
+            <button class="close-menu" id="closeMenu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#" class="menu-link active"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="#" class="menu-link"><i class="fas fa-calendar"></i> Meus Eventos</a></li>
+                <li><a href="#" class="menu-link"><i class="fas fa-ticket-alt"></i> Ingressos</a></li>
+                <li><a href="#" class="menu-link" id="walletBtn"><i class="fas fa-wallet"></i> Carteira</a></li>
+                <li><a href="#" class="menu-link"><i class="fas fa-user"></i> Perfil</a></li>
+                <li><a href="#" class="menu-link"><i class="fas fa-cog"></i> Configurações</a></li>
+                <li><a href="#" class="menu-link"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Overlay do Menu -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Conteúdo Principal -->
+    <main class="dashboard-main">
+        <!-- Banner de Eventos HOT -->
+        <section class="hot-events-section">
+            <h2 class="section-title">Eventos <span class="neon-text">HOT</span> da Semana</h2>
+            <div class="hot-events-carousel" id="hotEventsCarousel">
+                <!-- Os eventos serão carregados via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Seção de Filtros e Mapa -->
+        <section class="filters-section">
+            <div class="filters-container">
+                <div class="filter-left">
+                    <button class="map-btn" id="mapBtn">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Mapa
+                    </button>
+                </div>
+                <div class="filter-right">
+                    <button class="filter-btn" id="filterBtn">
+                        <i class="fas fa-filter"></i>
+                        Filtros
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Catálogo de Eventos -->
+        <section class="events-catalog">
+            <div class="events-grid" id="eventsGrid">
+                <!-- Os eventos serão carregados via JavaScript -->
+            </div>
+            <div class="loading-more" id="loadingMore" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                Carregando mais eventos...
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Filtros -->
+    <div id="filterModal" class="modal">
+        <div class="modal-content filter-modal-content">
+            <span class="close">&times;</span>
+            <h2>Filtrar Eventos</h2>
+            <form class="filter-form">
+                <div class="form-group">
+                    <label for="musicStyle">Estilo Musical</label>
+                    <select id="musicStyle" multiple>
+                        <option value="eletronica">Eletrônica</option>
+                        <option value="rock">Rock</option>
+                        <option value="funk">Funk</option>
+                        <option value="sertanejo">Sertanejo</option>
+                        <option value="pop">Pop</option>
+                        <option value="reggae">Reggae</option>
+                        <option value="hip-hop">Hip-Hop</option>
+                        <option value="emo">Emo</option>
+                        <option value="psytrance">Psytrance</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="priceRange">Faixa de Preço</label>
+                    <div class="price-range">
+                        <input type="range" id="priceRange" min="0" max="300" value="150">
+                        <span class="price-display">Até R$ <span id="priceValue">150</span></span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="eventDate">Data do Evento</label>
+                    <select id="eventDate">
+                        <option value="">Qualquer data</option>
+                        <option value="hoje">Hoje</option>
+                        <option value="amanha">Amanhã</option>
+                        <option value="semana">Esta semana</option>
+                        <option value="mes">Este mês</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="eventTime">Horário</label>
+                    <select id="eventTime">
+                        <option value="">Qualquer horário</option>
+                        <option value="tarde">Tarde (14h-18h)</option>
+                        <option value="noite">Noite (18h-23h)</option>
+                        <option value="madrugada">Madrugada (23h-06h)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ageRestriction">Restrição de Idade</label>
+                    <select id="ageRestriction">
+                        <option value="">Qualquer idade</option>
+                        <option value="livre">Livre</option>
+                        <option value="16">16+</option>
+                        <option value="18">18+</option>
+                        <option value="21">21+</option>
+                    </select>
+                </div>
+                
+                <div class="filter-buttons">
+                    <button type="button" class="btn btn-secondary" id="clearFilters">Limpar</button>
+                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal do Mapa -->
+    <div id="mapModal" class="modal">
+        <div class="modal-content map-modal-content">
+            <span class="close">&times;</span>
+            <h2>Eventos em Porto Alegre</h2>
+            <div id="map" class="map-container"></div>
+        </div>
+    </div>
+
+    <!-- Modal de Carteira -->
+    <div id="walletModal" class="modal">
+        <div class="modal-content wallet-modal-content">
+            <span class="close">&times;</span>
+            <h2>Minha Carteira</h2>
+            <div class="wallet-content">
+                <div class="current-balance">
+                    <h3>Saldo Atual</h3>
+                    <span class="balance-amount">R$ 150,00</span>
+                </div>
+                
+                <div class="add-funds">
+                    <h3>Adicionar Saldo</h3>
+                    <div class="amount-buttons">
+                        <button class="amount-btn" data-amount="25">R$ 25</button>
+                        <button class="amount-btn" data-amount="50">R$ 50</button>
+                        <button class="amount-btn" data-amount="100">R$ 100</button>
+                        <button class="amount-btn" data-amount="200">R$ 200</button>
+                    </div>
+                    <div class="custom-amount">
+                        <input type="number" id="customAmount" placeholder="Valor personalizado" min="10" max="1000">
+                    </div>
+                </div>
+                
+                <div class="payment-methods">
+                    <h3>Método de Pagamento</h3>
+                    <div class="payment-options">
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="pix" checked>
+                            <div class="payment-card">
+                                <i class="fas fa-qrcode"></i>
+                                <span>PIX</span>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="credit">
+                            <div class="payment-card">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Cartão</span>
+                            </div>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="paypal">
+                            <div class="payment-card">
+                                <i class="fab fa-paypal"></i>
+                                <span>PayPal</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary btn-full" id="addFundsBtn">Adicionar Saldo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes do Evento -->
+    <div id="eventDetailsModal" class="modal">
+        <div class="modal-content event-details-content">
+            <span class="close">&times;</span>
+            <div class="event-details-body">
+                <!-- Conteúdo será preenchido via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

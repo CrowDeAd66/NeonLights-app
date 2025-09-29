@@ -234,6 +234,11 @@ async function handleLogin(e) {
         
         showNotification('Login realizado com sucesso!', 'success');
         
+        // Redirecionar para dashboard
+        setTimeout(() => {
+            window.location.href = '/dashboard';
+        }, 1500);
+        
     } catch (error) {
         showNotification(error.message, 'error');
     }
@@ -1104,6 +1109,11 @@ async function handleRegister(e) {
             lastName: data.lastName
         };
         updateUIForLoggedUser();
+        
+        // Redirecionar para dashboard
+        setTimeout(() => {
+            window.location.href = '/dashboard';
+        }, 2000);
         
     } catch (error) {
         showNotification(error.message, 'error');

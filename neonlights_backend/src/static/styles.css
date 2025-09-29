@@ -49,6 +49,37 @@ body {
     filter: drop-shadow(0 0 10px var(--neon-cyan));
 }
 
+/* Abas de Usuário/Produtor */
+.user-type-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.tab-btn.active {
+    background: rgba(0, 255, 255, 0.2);
+    color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.tab-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 .neon-bg-cyan {
     background: linear-gradient(45deg, var(--neon-cyan), rgba(0, 255, 255, 0.3));
 }

@@ -85,9 +85,13 @@ example_events = [
 ]
 
 # Rota principal - servir o frontend
-@app.route("/")
+@app.route('/')
 def index():
     return send_from_directory('static', 'index.html')
+
+@app.route('/dashboard')
+def dashboard():
+    return send_from_directory('static', 'dashboard.html')
 
 # Rota para servir arquivos estáticos do frontend
 @app.route('/<path:filename>')
